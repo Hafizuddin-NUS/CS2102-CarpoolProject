@@ -21,7 +21,8 @@ $(() => {
             console.error(error);
             const $errorMessage = $('#errorMessage');
             $errorMessage.text(error.responseJSON.message);
-            $errorMessage.show();
+            $errorMessage.show(); 
+            //window.alert("Invalid account");
         });
     });
 });

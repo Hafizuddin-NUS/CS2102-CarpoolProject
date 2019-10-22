@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap Simple Login Form</title>
+    <title>Car Pooling Website</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
 		
 		<!-- CSS for Styling -->
@@ -17,12 +17,10 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="../javascripts/loginScript.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> 
     <style type="text/css">
       .login-form {
         width: 340px;
-          margin: 50px auto;
+        margin: 50px auto;
 	  }
     .login-form form {
     	margin-bottom: 15px;
@@ -33,20 +31,44 @@
     .login-form h2 {
         margin: 0 0 15px;
     }
-    .form-control, .btn {
+    .form-control, .btn, .msg {
         min-height: 38px;
         border-radius: 2px;
     }
-    .btn {        
+    .btn, .msg {        
         font-size: 15px;
         font-weight: bold;
     }
-    </style>
+    .alert {
+      padding: 20px;
+      background-color: #f44336; /* Red */
+      color: white;
+      margin-bottom: 15px;
+    }
+
+    /* The close button */
+    .closebtn {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    /* When moving the mouse over the close button */
+    .closebtn:hover {
+      color: black;
+    }
+  </style>
   </head>
   <body>
     <div class="login-form">
         <form id="html_form" action="login" role="form" method="post">
-            <h2 class="text-center">Log in</h2>       
+            <h2 class="text-center">Log in</h2>      
+            <div class="alert alert-danger" role="alert" id="errorMessage" style="display:none"> </div> 
             <div class="form-group">
                 <input type="text" class="form-control" id="username" name="username" placeholder="Username" required="required">
             </div>
@@ -56,9 +78,8 @@
             <div class="form-group">
                 <button type="submit" class="btn btn-primary btn-block">Login</button>
             </div>
-            <div class="clearfix">
-    
-        <p class="text-center"><a href="#">Create an Account</a></p>
+        </form>
+        <p class="text-center"><a href="signup">Create an Account</a></p>
     </div>
     </body>
 </html>
