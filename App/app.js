@@ -33,6 +33,7 @@ var login =  require('./auth/login');
 var logout = require('./auth/logout');
 var signup =  require('./auth/signup');
 var dashboard = require('./routes/dashboard');
+var driver_advertise = require('./routes/driver_advertise');
 var authMiddleware = require('./auth/middleware');
 var init = require('./routes/init');
 
@@ -80,7 +81,9 @@ app.use('/auth/login', login);
 app.use('/auth/logout', logout);
 app.use('/auth/signup',signup);
 app.use('/dashboard',authMiddleware.ensureLoggedIn, dashboard);
+app.use('/driver_advertise',authMiddleware.ensureLoggedIn, driver_advertise);
 app.use('/init',authMiddleware.ensureLoggedIn, init);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
