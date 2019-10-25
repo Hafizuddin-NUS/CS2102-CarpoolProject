@@ -16,12 +16,13 @@ $(() => {
         login(user)
         .then(result => {
             console.log(result);
-            window.location = '/select';
+            window.location = '/dashboard';
         }).catch(error => {
             console.error(error);
             const $errorMessage = $('#errorMessage');
             $errorMessage.text(error.responseJSON.message);
-            $errorMessage.show();
+            $errorMessage.show(); 
+            //window.alert("Invalid account");
         });
     });
 });
