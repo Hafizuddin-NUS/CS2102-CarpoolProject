@@ -29,14 +29,14 @@ var formsRouter = require('./routes/forms');
 var insertRouter = require('./routes/insert');
 /* ---------------------------- */
 
-var login =  require('./auth/login');
+var login = require('./auth/login');
 var logout = require('./auth/logout');
-var signup =  require('./auth/signup');
+var signup = require('./auth/signup');
 var dashboard = require('./routes/dashboard');
 var driver_advertise = require('./routes/driver_advertise');
 var authMiddleware = require('./auth/middleware');
 var init = require('./routes/init');
-
+var passenger = require('./routes/passenger');
 
 var app = express();
 
@@ -63,7 +63,7 @@ app.use('/loops', loopsRouter);
 /* ---------------------------- */
 
 /* --- V4: Database Connect --- */
-app.use('/select', authMiddleware.ensureLoggedIn ,selectRouter);
+app.use('/select', authMiddleware.ensureLoggedIn, selectRouter);
 /* ---------------------------- */
 
 /* --- V5: Adding Forms     --- */
@@ -83,15 +83,16 @@ app.use('/auth/signup',signup);
 app.use('/dashboard',authMiddleware.ensureLoggedIn, dashboard);
 app.use('/driver_advertise',authMiddleware.ensureLoggedIn, driver_advertise);
 app.use('/init',authMiddleware.ensureLoggedIn, init);
+app.use('/passenger', authMiddleware.ensureLoggedIn, passenger);
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   //res.locals.message = err.message;
   //res.locals.error = req.app.get('env') === 'development' ? err : {};
