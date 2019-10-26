@@ -85,7 +85,6 @@ app.use('/driver_advertise',authMiddleware.ensureLoggedIn, driver_advertise);
 app.use('/init',authMiddleware.ensureLoggedIn, init);
 app.use('/passenger', authMiddleware.ensureLoggedIn, passenger);
 
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
