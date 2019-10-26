@@ -19,6 +19,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="../javascripts/passengerScript.js"></script> 
 </head>
 
@@ -67,14 +68,57 @@
 										</tbody>
                                     </table>
                                     <br />
+                                    <div class="form-group" method="post">
+                                            <input type="text" class="form-control" id="bid_price" name="bid_price" placeholder="bid_price" required="required">
+                                    </div>
 			                        <input id = "btnGet" type="button" value="Get Selected" />
 								</div>
 							</div>
                         </div>
                         <div class="card mb-3">
                             <div class="card-header">
-                                <i class="fas fa-address-card"></i> &nbsp; My Bids | Completed Trips
+                                <i class="fas fa-address-card"></i> &nbsp; My Bids | Current
                             </div>
+                            <div class="card-body">
+								<div class="table-responsive">
+									<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+										<thead>
+											<tr>
+                                                <th>&nbsp;</th>
+                                                <th>Driver</th>
+                                                <th>License Plate</th>
+												<th>Start Location</th>
+												<th>End Location</th>
+												<th>Start Time</th>
+												<th>End Time</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                                <th>Bid Price</th>
+                                                <th>Won?</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% for(var i=0; i<data2.length; i++) { %>
+											<tr>
+                                                <td><input type="checkbox" class="check"/></td>
+												<td><%= data2[i].driver_username%></td>
+												<td><%= data2[i].license_plate%></td>
+												<td><%= data2[i].s_location%></td>
+												<td><%= data2[i].e_location%></td>
+												<td><%= data2[i].s_time%></td>
+												<td><%= data2[i].e_time%></td>
+                                                <td><%= data2[i].s_date%></td>
+                                                <td><%= data2[i].e_date%></td>
+                                                <td><%= data2[i].bid_price%></td>
+                                                <td><%= data2[i].is_win%></td>
+											</tr>
+											<% } %>
+										</tbody>
+                                    </table>
+                                    <br />
+			                        <input id = "btnGet2" type="button" value="Delete selected" />
+								</div>
+							</div>
                         </div>
                     </div>
                 </div>
