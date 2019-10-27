@@ -37,6 +37,7 @@ var driver_advertise = require('./routes/driver_advertise');
 var authMiddleware = require('./auth/middleware');
 var init = require('./routes/init');
 var passenger = require('./routes/passenger');
+var driver_update = require('./routes/driver_update');
 
 var app = express();
 
@@ -84,6 +85,7 @@ app.use('/dashboard',authMiddleware.ensureLoggedIn, dashboard);
 app.use('/driver_advertise',authMiddleware.ensureLoggedIn, driver_advertise);
 app.use('/init',authMiddleware.ensureLoggedIn, init);
 app.use('/passenger', authMiddleware.ensureLoggedIn, passenger);
+app.use('/driver_update', authMiddleware.ensureLoggedIn, driver_update);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

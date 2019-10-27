@@ -3,6 +3,10 @@ const sql = {}
 sql.query = {
     // Update
     update_info: "UPDATE users SET display_name=$2, phone_num=$3 WHERE username=$1",
+    check_driver: "SELECT * FROM drivers WHERE driver_username=$1",
+    all_type_cat: "SELECT * FROM category",
+    add_vehicle: "INSERT INTO vehicles VALUES ($1, $2)",
+    get_model: "SELECT * FROM category WHERE type=$1",
 
     all_advertised_trips: "SELECT * FROM advertised_trips",
     add_bid: "INSERT INTO bids VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)",

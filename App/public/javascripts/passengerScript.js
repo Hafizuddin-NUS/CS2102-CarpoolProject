@@ -39,7 +39,7 @@ $(() => {
                 .then(result => {
                     console.log(result);
                     window.location = '/passenger';
-                }).catch(error => {
+                }).catch(error => { 
                     console.error(error);
                     const $errorMessage = $('#errorMessage');
                     $errorMessage.text(error.responseJSON.message);
