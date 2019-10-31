@@ -48,6 +48,26 @@ router.post('/add', (req, res, next) => {
 	});
 });
 
+router.post('/delete_bid', (req, res, next) => {
+	var passenger_username  = req.signedCookies.user_id;
+	var driver_username  = req.body.driver_username;
+	var s_time = req.body.s_time;
+	var e_time = req.body.e_time;
+	var s_date = req.body.s_date;
+	var formatted_s_date = moment(s_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+	var e_date = req.body.e_date;
+	var formatted_e_date = moment(e_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+    var license_plate = req.body.license_plate;
+	pool.query(sql_query.query.delete_bid, [passenger_username, driver_username, s_time, e_time, formatted_s_date, formatted_e_date, license_plate],(err, data2) => {
+		if(err) {
+			console.error(err);
+		}
+		else
+		{
+			res.redirect('/driver_advertise');
+		}
+	});
+});
 
 module.exports = router;
 //query = sql_query.query.add_bid + "'" + bid_price + "'," + "'" + req.signedCookies.user_id + "'," + "'" + driver_username + "'," + "'" + s_location + "'," + "'" + e_location 
