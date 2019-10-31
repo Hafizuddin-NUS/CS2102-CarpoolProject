@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS passengers CASCADE;
 DROP TABLE IF EXISTS drivers CASCADE;
 DROP TABLE IF EXISTS addressbook CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+
 SET datestyle = dmy;
 
 CREATE TABLE  users (
@@ -139,7 +140,6 @@ INSERT INTO location_dist VALUES ('NUS', '9');
 INSERT INTO location_dist VALUES ('Jurong', '11');
 INSERT INTO location_dist VALUES ('Boon Lay', '13');
 
-
 CREATE TABLE  distance_fare (
 	distance VARCHAR(256) NOT NULL UNIQUE,
 	price numeric NOT NULL
@@ -225,4 +225,6 @@ CREATE TABLE bids (
 );
 INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Blk 116 Bedok Reservoir Road', 'NUS', '13:22', '14:22', '17/9/2019', '17/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
 INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Changi Airport', 'Bedok', '13:00', '14:22', '18/9/2019', '18/9/2019', 'S1234567J', '2.9', '1.3');
+
 SELECT * FROM BIDS;
+

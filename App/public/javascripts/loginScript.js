@@ -28,5 +28,5 @@ $(() => {
 });
 
 function login(user) {
-    return $.post('http://localhost:3000/auth/login',user);
+    return $.post('http://localhost:3000/',user);
 }
