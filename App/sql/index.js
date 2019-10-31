@@ -8,6 +8,7 @@ sql.query = {
     add_vehicle: "INSERT INTO vehicles VALUES ($1, $2)",
     get_model: "SELECT * FROM category WHERE type=$1",
     get_location: "SELECT location FROM location_dist",
+    add_driver: "INSERT INTO drivers VALUES($1) ",
 
     add_advertised_trips: "INSERT INTO advertised_trips VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
     driver_advertised_trips: "SELECT * FROM advertised_trips WHERE driver_username = $1",

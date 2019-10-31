@@ -77,4 +77,21 @@ router.post('/adding_vehicle', (req, res, next) => {
 	});
 });
 
+router.get('/add_driver', (req, res, next) => {
+	res.render('driver_add', {title: req.signedCookies.user_id, isLoggedin: req.signedCookies.user_id});
+
+});
+
+router.post('/add_driver', (req, res, next) => {
+	pool.query(sql_query.query.add_driver,[req.signedCookies.user_id] ,(err, data) => {
+		if(err) {
+			console.error(err);
+		} 
+        else{
+            res.redirect('../dashboard');
+        }
+	});
+
+});
+
 module.exports = router;
