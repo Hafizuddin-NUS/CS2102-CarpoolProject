@@ -87,7 +87,7 @@ return $.post('http://localhost:3000/driver_advertise/delete_advertise', selecte
 
 function advertise(array) {
     return $.post('http://localhost:3000/driver_advertise/advertise', array);
-    }
+}
 
 function location1()
 {
