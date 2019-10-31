@@ -26,12 +26,12 @@
 								<div class="card-header">
 									<i class="fas fa-address-card"></i> &nbsp; Advertise Trips
 								</div>
-								<form method="post" action="./init/update_info">
+								<form method="post" action="./driver_advertise/advertise">
 									<div class="card-body">
 										<div class="form-group row">
 											<label for="license_plate" class="col-sm-2 col-form-label"><b>Vehicle:</b></label>
 											<div class="col-sm-7">
-												<input type="text" required="required" class="form-control" id="license_plate"  value=""  name="s_location">
+												<input type="text" required="required" class="form-control" id="license_plate"  value=""  name="license_plate">
 											</div>
 										</div>
 										<div class="form-group row">
@@ -47,9 +47,13 @@
 											</div>
 										</div>
 										<div class="form-group row">
-											<label for="s_date" class="col-sm-2 col-form-label"><b>Date:</b></label>
+											<label for="s_date" class="col-sm-2 col-form-label"><b>Start Date:</b></label>
 											<div class="col-sm-4">
 												<input type="text" required="required" class="form-control" id="s_date" value="" name="s_date" >
+											</div>
+											<label for="s_date" class="col-sm-2 col-form-label"><b>End Date:</b></label>
+											<div class="col-sm-4">
+												<input type="text" required="required" class="form-control" id="e_date" value="" name="e_date" >
 											</div>
 										</div>
 										<div class="form-group row">
