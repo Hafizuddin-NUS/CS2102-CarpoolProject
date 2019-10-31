@@ -8,7 +8,7 @@ const pool = new Pool({
 });
 
 
-router.post('/', function(req, res, next) {
+router.get('/', function(req, res, next) {
 	pool.query(sql_query.query.all_type_cat, (err, data) => {
 		if(err){
             res.json({
@@ -75,6 +75,23 @@ router.post('/adding_vehicle', (req, res, next) => {
             res.redirect('../dashboard');
         }
 	});
+});
+
+router.get('/add_driver', (req, res, next) => {
+	res.render('driver_add', {title: req.signedCookies.user_id, isLoggedin: req.signedCookies.user_id});
+
+});
+
+router.post('/add_driver', (req, res, next) => {
+	pool.query(sql_query.query.add_driver,[req.signedCookies.user_id] ,(err, data) => {
+		if(err) {
+			console.error(err);
+		} 
+        else{
+            res.redirect('../dashboard');
+        }
+	});
+
 });
 
 module.exports = router;
