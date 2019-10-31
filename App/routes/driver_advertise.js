@@ -62,7 +62,14 @@ router.get('/', function(req, res, next) {
             }); 
 		}
 		else if (data.rows.length >= 0) {
-			res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, isLoggedin: req.signedCookies.user_id });
+			pool.query(sql_query.query.get_location, (err, data2) => {
+				if(err){
+					console.error(err);
+				}
+				else{
+					res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, isLoggedin: req.signedCookies.user_id });
+				}
+			});
 		}
 		else {
 			next(new Error('Error more than 2 entries found.'));
