@@ -14,12 +14,11 @@
 		<link href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 		<!-- Custom styles for this template-->
-        <link href="stylesheets/index.css" rel="stylesheet">
+        <link href="../stylesheets/index.css" rel="stylesheet">
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="../javascripts/driver_updateScript.js"></script>
 
   </head>
 	<body id="page-top">
@@ -30,32 +29,18 @@
 						<div class="container-fluid">
 							<div class="card mb-3">
 								<div class="card-header">
-									<i class="fas fa-address-card"></i> &nbsp; Add new vehicle 
+									<i class="fas fa-address-card"></i> &nbsp; Registration
 								</div>
-								<form method="get" action="/driver_update/add_vehicle">
+								<form method="post" action="/driver_update/add_driver">
 									<div class="card-body">
 										<div class="form-group row">
 											<label for="username" class="col-sm-2 col-form-label"><b>User ID:</b></label>
 											<div class="col-sm-4">
 												<input type="text" required="required" readonly class="form-control-plaintext" id="username"  value="<%= title %>"  name="username">
 											</div>
-											<label for="registered" class="col-sm-2 col-form-label"><b>Driver:</b></label>
-											<div class="col-sm-4">
-												<input type="text" required="required" readonly class="form-control-plaintext" id="driver" value="<%= status %>"  name="driver">
-											</div>
-										</div>
-										<div class="form-group row">
-											<label for="type2" class="type2 col-sm-2 col-form-label"><b>Select type of vehicle:</b></label>
-											<div class="col-sm-4">
-											<select class="form-control" id="id" onchange="demo()" >
-                                            <% for(var i=0; i<data.length; i++) { %>
-                                                    <option value="<%= data[i].type%>"><%= data[i].type%></option>
-                                            <% } %>
-                                            </select>
-                                            </div>
 										</div>
 									</div>
-									<div class="card-footer small text-muted"><button type="submit" id="btn" class="btn btn-secondary">Next</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
+									<div class="card-footer small text-muted"><button type="submit" id="btn" class="btn btn-secondary">Register now</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
 								</form>
 							</div>
 						</div>
