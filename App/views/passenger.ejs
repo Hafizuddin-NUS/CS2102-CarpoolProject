@@ -173,18 +173,21 @@
                                     </table>
                                     <br />
                                     <div class="form-group row">
-                                        <label for="phone_num" class="col-sm-2 col-form-label"><b>Rating:</b></label>
+                                        <label for="phone_num" class="col-sm-2 col-form-label">
+                                            <b>Rating:</b>
+                                        </label>
                                         <div class="col-sm-4">
-                                            <input type="text" required="required" class="form-control" id="rating" placeholder="Rate driver to end trip" value="" name="phone_num" >
+                                            <input type="text" required="required" class="form-control" id="rating" placeholder="Rate driver to end trip" value="" name="phone_num">
                                         </div>
 
                                     </div>
-								</div>
-                            </div>
-                            <div class="card-footer small text-muted"><input id = "btnGet2" class="btn btn-secondary" type="button" value="Delete selected" />
-                                <input id = "btnGet3" class="btn btn-secondary" type="button" value="End selected trip" /></div>
-                                    <input id="btnGet2" type="button" value="Delete selected" />
                                 </div>
+                            </div>
+                            <div class="card-footer small text-muted">
+                                <input id="btnGet2" class="btn btn-secondary" type="button" value="Delete selected" />
+                                <input id="btnGet3" class="btn btn-secondary" type="button" value="End selected trip" />
+                            </div>
+
 
                         </div>
                         <div class="card mb-3">
@@ -192,39 +195,57 @@
                                 <i class="fas fa-address-card"></i> &nbsp; My Bids | Completed Trips History
                             </div>
                             <div class="card-body">
-								<div class="table-responsive">
-									<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-										<thead>
-											<tr>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
                                                 <th>&nbsp;</th>
                                                 <th>Driver</th>
                                                 <th>License Plate</th>
-												<th>Start Location</th>
-												<th>End Location</th>
-												<th>Start Time</th>
-												<th>End Time</th>
+                                                <th>Start Location</th>
+                                                <th>End Location</th>
+                                                <th>Start Time</th>
+                                                <th>End Time</th>
                                                 <th>Start Date</th>
                                                 <th>End Date</th>
-											</tr>
-										</thead>
-										<tbody>
-											<% for(var i=0; i<data3.length; i++) { %>
-											<tr>
-                                                <td><input type="checkbox" class="check"/></td>
-												<td><%= data3[i].driver_username%></td>
-												<td><%= data3[i].license_plate%></td>
-												<td><%= data3[i].s_location%></td>
-												<td><%= data3[i].e_location%></td>
-												<td><%= data3[i].s_time%></td>
-												<td><%= data3[i].e_time%></td>
-                                                <td><%= data3[i].s_date%></td>
-                                                <td><%= data3[i].e_date%></td>
-											</tr>
-											<% } %>
-										</tbody>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for(var i=0; i<data3.length; i++) { %>
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" class="check" />
+                                                    </td>
+                                                    <td>
+                                                        <%= data3[i].driver_username%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data3[i].license_plate%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data3[i].s_location%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data3[i].e_location%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data3[i].s_time%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data3[i].e_time%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data3[i].s_date%>
+                                                    </td>
+                                                    <td>
+                                                        <%= data3[i].e_date%>
+                                                    </td>
+                                                </tr>
+                                                <% } %>
+                                        </tbody>
                                     </table>
                                     <br />
-								</div>
+                                </div>
                             </div>
                         </div>
                     </div>

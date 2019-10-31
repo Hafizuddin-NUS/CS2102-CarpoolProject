@@ -15,12 +15,19 @@ router.get('/', function (req, res, next) {
 			if (err) {
 				console.error("Error getting info");
 			} else {
-				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id], (err2, data2) => {
+				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 'f'], (err2, data2) => {
 					if (err2) {
-						console.error("Error getting info");
-					} else {
-						res.render('passenger', { isLoggedin: req.signedCookies.user_id, title: req.signedCookies.user_id, data: data.rows, data2: data2.rows });
+						console.error("Error getting info:2");
 					}
+					else {
+						pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 't'], (err3, data3) => {
+							if (err3) {
+								console.error("Error getting info:3");
+							} else {
+								res.render('passenger', { isLoggedin: req.signedCookies.user_id, title: req.signedCookies.user_id, data: data.rows, data2: data2.rows, data3: data3.rows });
+							}
+						})
+					};
 				});
 			}
 		});
@@ -30,11 +37,17 @@ router.get('/', function (req, res, next) {
 			if (err) {
 				console.error("Error getting info");
 			} else {
-				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id], (err2, data2) => {
+				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 'f'], (err2, data2) => {
 					if (err2) {
-						console.error("Error getting info");
+						console.error("Error getting info:2");
 					} else {
-						res.render('passenger', { isLoggedin: req.signedCookies.user_id, title: req.signedCookies.user_id, data: data.rows, data2: data2.rows });
+						pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 't'], (err3, data3) => {
+							if (err3) {
+								console.error("Error getting info:3");
+							} else {
+								res.render('passenger', { isLoggedin: req.signedCookies.user_id, title: req.signedCookies.user_id, data: data.rows, data2: data2.rows, data3: data3.rows });
+							}
+						});
 					}
 				});
 			}
