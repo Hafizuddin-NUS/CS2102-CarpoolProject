@@ -21,5 +21,19 @@ router.post('/update_info', (req, res, next) => {
 	});
 });
 
+router.post('/add_vehicle', (req, res, next) => {
+	var username  = req.body.username;
+    var display_name = req.body.display_name;
+    var phone_num = req.body.phone_num;
+	pool.query(sql_query.query.update_info, [username, display_name, phone_num], (err, data) => {
+		if(err) {
+			console.error("Error in update info");
+		} else {
+			res.redirect('/dashboard');
+		}
+	});
+});
+
+
 
 module.exports = router;
