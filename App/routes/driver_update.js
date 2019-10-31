@@ -8,7 +8,7 @@ const pool = new Pool({
 });
 
 
-router.post('/', function(req, res, next) {
+router.get('/', function(req, res, next) {
 	pool.query(sql_query.query.all_type_cat, (err, data) => {
 		if(err){
             res.json({

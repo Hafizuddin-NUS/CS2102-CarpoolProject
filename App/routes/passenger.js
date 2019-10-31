@@ -11,14 +11,19 @@ const pool = new Pool({
 router.get('/', function (req, res, next) {
     pool.query(sql_query.query.all_advertised_trips, (err, data) => {
 		if(err) {
-			console.error("Error getting info");
+			console.error("Error getting info:1");
 		} else {
-			pool.query(sql_query.query.display_bids, [req.signedCookies.user_id], (err2, data2) => {
+			pool.query(sql_query.query.display_bids, [req.signedCookies.user_id,'f'], (err2, data2) => {
 				if(err2) {
-					console.error("Error getting info");
-				} else {
-					res.render('passenger', { isLoggedin: req.signedCookies.user_id, title: req.signedCookies.user_id, data: data.rows, data2: data2.rows });
-				}
+					console.error("Error getting info:2");
+				} else 
+				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id,'t'], (err2, data3) => {
+					if(err2) {
+						console.error("Error getting info:2");
+					} else {
+						res.render('passenger', { isLoggedin: req.signedCookies.user_id, title: req.signedCookies.user_id, data: data.rows, data2: data2.rows, data3: data3.rows });
+					}
+				});
 			});
 		}
 	});
@@ -48,6 +53,47 @@ router.post('/add', (req, res, next) => {
 	});
 });
 
+router.post('/delete_bid', (req, res, next) => {
+	var passenger_username  = req.signedCookies.user_id;
+	var driver_username  = req.body.driver_username;
+	var s_time = req.body.s_time;
+	var e_time = req.body.e_time;
+	var s_date = req.body.s_date;
+	var formatted_s_date = moment(s_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+	var e_date = req.body.e_date;
+	var formatted_e_date = moment(e_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+    var license_plate = req.body.license_plate;
+	pool.query(sql_query.query.delete_bid, [passenger_username, driver_username, s_time, e_time, formatted_s_date, formatted_e_date, license_plate],(err, data2) => {
+		if(err) {
+			console.error(err);
+		}
+		else
+		{
+			res.redirect('/driver_advertise');
+		}
+	});
+});
+router.post('/end_trip', (req, res, next) => {
+	var passenger_username  = req.signedCookies.user_id;
+	var driver_username  = req.body.driver_username;
+	var s_time = req.body.s_time;
+	var e_time = req.body.e_time;
+	var s_date = req.body.s_date;
+	var formatted_s_date = moment(s_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+	var e_date = req.body.e_date;
+	var formatted_e_date = moment(e_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+	var license_plate = req.body.license_plate;
+	var rating = req.body.rating;
+	pool.query(sql_query.query.end_trip, [passenger_username, driver_username, s_time, e_time, formatted_s_date, formatted_e_date, license_plate,rating],(err, data2) => {
+		if(err) {
+			console.error(err);
+		}
+		else
+		{
+			res.redirect('/driver_advertise');
+		}
+	});
+});
 
 module.exports = router;
 //query = sql_query.query.add_bid + "'" + bid_price + "'," + "'" + req.signedCookies.user_id + "'," + "'" + driver_username + "'," + "'" + s_location + "'," + "'" + e_location 

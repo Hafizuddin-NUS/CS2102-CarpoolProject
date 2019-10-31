@@ -15,6 +15,11 @@
 
 		<!-- Custom styles for this template-->
 		<link href="stylesheets/index.css" rel="stylesheet">
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="../javascripts/driver_advertiseScript.js"></script> 
   </head>
 	<body id="page-top">
         <%- include navbar.ejs %>
@@ -37,44 +42,56 @@
 										<div class="form-group row">
 											<label for="s_location" class="col-sm-2 col-form-label"><b>Start location:</b></label>
 											<div class="col-sm-7">
-												<input type="text" required="required" class="form-control" id="s_location"  value=""  name="s_location">
+												<select class="form-control" id="id1" onchange="location1()" >
+													<% for(var i=0; i<data2.length; i++) { %>
+															<option value="<%= data2[i].location%>"><%= data2[i].location%></option>
+													<% } %>
+												</select>											
 											</div>
 										</div>
 										<div class="form-group row">
 											<label for="e_location" class="col-sm-2 col-form-label"><b>End location:</b></label>
 											<div class="col-sm-7">
-												<input type="text" required="required" class="form-control" id="e_location"  value=""  name="e_location">
+												<select class="form-control" id="id2" onchange="location2()" >
+													<% for(var i=0; i<data2.length; i++) { %>
+															<option value="<%= data2[i].location%>"><%= data2[i].location%></option>
+													<% } %>
+												</select>												
 											</div>
 										</div>
 										<div class="form-group row">
 											<label for="s_date" class="col-sm-2 col-form-label"><b>Start Date:</b></label>
 											<div class="col-sm-4">
-												<input type="text" required="required" class="form-control" id="s_date" value="" name="s_date" >
+												<input type="text" required="required" class="form-control" id="s_date" placeholder="DD/MM/YYYY" value="" name="s_date" >
 											</div>
 											<label for="s_date" class="col-sm-2 col-form-label"><b>End Date:</b></label>
 											<div class="col-sm-4">
-												<input type="text" required="required" class="form-control" id="e_date" value="" name="e_date" >
+												<input type="text" required="required" class="form-control" id="e_date" placeholder="DD/MM/YYYY" value="" name="e_date" >
 											</div>
 										</div>
 										<div class="form-group row">
 											<label for="s_time" class="col-sm-2 col-form-label"><b>Start time:</b></label>
 											<div class="col-sm-4">
-												<input type="text" required="required" class="form-control" id="s_time" value="" name="s_time" >
+												<input type="text" required="required" class="form-control" id="s_time" placeholder="HH:MM" value="" name="s_time" >
 											</div>
 											<label for="e_time" class="col-sm-2 col-form-label"><b>End time:</b></label>
 											<div class="col-sm-4">
-												<input type="text" required="required" class="form-control" id="e_time" value="" name="e_time" >
+												<input type="text" required="required" class="form-control" id="e_time" placeholder="HH:MM" value="" name="e_time" >
 											</div>
 										</div>
 									</div>
 									<div class="card-footer small text-muted"><button type="submit" class="btn btn-secondary">Advertise</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
 								</form>
 							</div>
+							<div class="card-header">
+                                <i class="fas fa-address-card"></i> &nbsp; Advertised Trips
+							</div>
 							<div class="card-body">
 								<div class="table-responsive">
 									<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
 										<thead>
 											<tr>
+												<th>&nbsp;</th>
 												<th>Start Date</th>
 												<th>End Date</th>
 												<th>Start Time</th>
@@ -88,6 +105,7 @@
 										<tbody>
 											<% for(var i=0; i<data.length; i++) { %>
 											<tr>
+												<td><input type="checkbox" class="check"/></td>
 												<td><%= data[i].s_date%></td>
 												<td><%= data[i].e_date%></td>
 												<td><%= data[i].s_time%></td>
@@ -100,6 +118,8 @@
 											<% } %>
 										</tbody>
 									</table>
+									<br />
+			                        <input id = "btnGet2" type="button" value="Delete selected" />
 								</div>
 							</div>
 						</div>
