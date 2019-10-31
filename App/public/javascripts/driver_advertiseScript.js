@@ -5,6 +5,41 @@ $(() => {
         });
     });
 
+    $('form').submit((event) => {
+        event.preventDefault();
+
+        const s_location =location1();
+        const e_location =location2();
+        const license_plate = $('#license_plate').val();
+        const s_date =$('#s_date').val();
+        const e_date =$('#e_date').val();
+        const s_time =$('#s_time').val();
+        const e_time =$('#e_time').val();
+        
+        const array = {
+            s_location,
+            e_location,
+            license_plate,
+            s_date,
+            e_date,
+            s_time,
+            e_time
+        };
+
+        advertise(array)
+        .then(result => {
+            console.log(result);
+            window.location = '/driver_advertise';
+        }).catch(error => {
+            console.error(error);
+            const $errorMessage = $('#errorMessage');
+            $errorMessage.text(error.responseJSON.message);
+            $errorMessage.show(); 
+            //window.alert("Invalid account");
+        });
+    
+    });
+
     //Assign Click event to Button.
     $("#btnGet2").click(function () {
         //Loop through all checked CheckBoxes in GridView.
@@ -48,4 +83,26 @@ $(() => {
 
 function delete_advertise(selected_row) {
 return $.post('http://localhost:3000/driver_advertise/delete_advertise', selected_row);
+}
+
+function advertise(array) {
+    return $.post('http://localhost:3000/driver_advertise/advertise', array);
+    }
+
+function location1()
+{
+  //alert($('#id').val());
+  var displaytext = $('#id1').val();
+  //alert(displaytext);
+  return displaytext;
+
+}
+
+function location2()
+{
+  //alert($('#id').val());
+  var displaytext = $('#id2').val();
+  //alert(displaytext);
+  return displaytext;
+
 }
