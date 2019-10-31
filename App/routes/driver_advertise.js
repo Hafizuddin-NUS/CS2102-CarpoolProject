@@ -52,6 +52,27 @@ router.post('/delete_advertise', (req, res, next) => {
 	});
 });
 
+router.post('/accept_bid', (req, res, next) => {
+	var driver_username  = req.signedCookies.user_id;
+    var passenger_username = req.body.passenger_username;
+    var license_plate = req.body.license_plate;
+	var s_time = req.body.s_time;
+	var e_time = req.body.e_time;
+	var s_date = req.body.s_date;
+	var formatted_s_date = moment(s_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+	var e_date = req.body.e_date;
+	var formatted_e_date = moment(e_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+	pool.query(sql_query.query.accept_bid, [passenger_username, driver_username, s_time, e_time, formatted_s_date, formatted_e_date, license_plate],(err, data2) => {
+		if(err) {
+			console.error(err);
+		}
+		else
+		{
+			res.redirect('/driver_advertise');
+		}
+	});
+});
+
 /* GET */
 router.get('/', function(req, res, next) {
 	var driver_username = req.signedCookies.user_id;
@@ -66,8 +87,14 @@ router.get('/', function(req, res, next) {
 				if(err){
 					console.error(err);
 				}
-				else{
-					res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, isLoggedin: req.signedCookies.user_id });
+				else if (data2.rows.length >= 0){
+					pool.query(sql_query.query.display_driver_bids, [driver_username], (err, data3) => {
+						if(err){
+							console.error(err);
+						} else{	
+							res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, data3: data3.rows, isLoggedin: req.signedCookies.user_id });
+						}
+					});
 				}
 			});
 		}

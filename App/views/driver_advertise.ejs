@@ -23,7 +23,7 @@
   </head>
 	<body id="page-top">
         <%- include navbar.ejs %>
-        <div id="wrapper">
+        	<div id="wrapper">
 				<%- include sidebar.ejs %>
 					<div id="content-wrapper">
 						<div class="container-fluid">
@@ -83,50 +83,93 @@
 									<div class="card-footer small text-muted"><button type="submit" class="btn btn-secondary">Advertise</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
 								</form>
 							</div>
-							<div class="card-header">
-                                <i class="fas fa-address-card"></i> &nbsp; Advertised Trips
-							</div>
-							<div class="card-body">
-								<div class="table-responsive">
-									<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-										<thead>
-											<tr>
-												<th>&nbsp;</th>
-												<th>Start Date</th>
-												<th>End Date</th>
-												<th>Start Time</th>
-												<th>End Time</th>
-												<th>Start Location</th>
-												<th>End Location</th>
-												<th>Vehicle</th>
-												<th>Min Bid</th>
-											</tr>
-										</thead>
-										<tbody>
-											<% for(var i=0; i<data.length; i++) { %>
-											<tr>
-												<td><input type="checkbox" class="check"/></td>
-												<td><%= data[i].s_date%></td>
-												<td><%= data[i].e_date%></td>
-												<td><%= data[i].s_time%></td>
-												<td><%= data[i].e_time%></td>
-												<td><%= data[i].s_location%></td>
-												<td><%= data[i].e_location%></td>
-												<td><%= data[i].license_plate%></td>
-												<td><%= data[i].min_bid%></td>
-											</tr>
-											<% } %>
-										</tbody>
-									</table>
-									<br />
-			                        <input id = "btnGet2" type="button" value="Delete selected" />
+							<div class="card mb-3">
+								<div class="card-header">
+                                	<i class="fas fa-address-card"></i> &nbsp; Advertised Trips
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+											<thead>
+												<tr>
+													<th>&nbsp;</th>
+													<th>Start Date</th>
+													<th>End Date</th>
+													<th>Start Time</th>
+													<th>End Time</th>
+													<th>Start Location</th>
+													<th>End Location</th>
+													<th>Vehicle</th>
+													<th>Min Bid</th>
+												</tr>
+											</thead>
+											<tbody>
+												<% for(var i=0; i<data.length; i++) { %>
+												<tr>
+													<td><input type="checkbox" class="check"/></td>
+													<td><%= data[i].s_date%></td>
+													<td><%= data[i].e_date%></td>
+													<td><%= data[i].s_time%></td>
+													<td><%= data[i].e_time%></td>
+													<td><%= data[i].s_location%></td>
+													<td><%= data[i].e_location%></td>
+													<td><%= data[i].license_plate%></td>
+													<td><%= data[i].min_bid%></td>
+												</tr>
+												<% } %>
+											</tbody>
+										</table>
+										<br />
+										<input id = "btnGet2" type="button" value="Delete selected" />
+									</div>
 								</div>
 							</div>
+							<div class="card mb-3">
+									<div class="card-header">
+										<i class="fas fa-address-card"></i> &nbsp; Current Bids
+									</div>
+									<div class="card-body">
+										<div class="table-responsive">
+											<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+												<thead>
+													<tr>
+														<th>&nbsp;</th>
+														<th>Passenger Name</th>
+														<th>Start Date</th>
+														<th>End Date</th>
+														<th>Start Time</th>
+														<th>End Time</th>
+														<th>Start Location</th>
+														<th>End Location</th>
+														<th>Vehicle</th>
+														<th>Bid_price</th>
+													</tr>
+												</thead>
+												<tbody>
+													<% for(var i=0; i<data3.length; i++) { %>
+													<tr>
+														<td><input type="checkbox" class="check"/></td>
+														<td><%= data3[i].passenger_username%></td>
+														<td><%= data3[i].s_date%></td>
+														<td><%= data3[i].e_date%></td>
+														<td><%= data3[i].s_time%></td>
+														<td><%= data3[i].e_time%></td>
+														<td><%= data3[i].s_location%></td>
+														<td><%= data3[i].e_location%></td>
+														<td><%= data3[i].license_plate%></td>
+														<td><%= data3[i].bid_price%></td>
+													</tr>
+													<% } %>
+												</tbody>
+											</table>
+											<br />
+											<input id = "btnGet3" type="button" value="Accept Bid" />
+										</div>
+									</div>
+								</div>
 						</div>
-					</div>
-					
-        </div>
-
-  </body>
+					</div>	
+        	</div>
+  	</body>
 </html>
 
