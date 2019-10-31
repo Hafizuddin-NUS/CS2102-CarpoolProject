@@ -20,7 +20,7 @@ $(() => {
         login(user)
         .then(result => {
             console.log(result);
-            window.location = '/';
+            window.location = '../';
         }).catch(error => {
             console.error(error);
             const $errorMessage = $('#errorMessage');
