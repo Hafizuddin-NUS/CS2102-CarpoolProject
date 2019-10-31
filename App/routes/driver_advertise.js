@@ -32,6 +32,26 @@ router.post('/advertise', (req, res, next) => {
 	});
 });
 
+router.post('/delete_advertise', (req, res, next) => {
+	var driver_username  = req.signedCookies.user_id;
+    var license_plate = req.body.license_plate;
+	var s_time = req.body.s_time;
+	var e_time = req.body.e_time;
+	var s_date = req.body.s_date;
+	var formatted_s_date = moment(s_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+	var e_date = req.body.e_date;
+	var formatted_e_date = moment(e_date,'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
+	pool.query(sql_query.query.delete_advertised_trips, [driver_username, s_time, e_time, formatted_s_date, formatted_e_date, license_plate],(err, data2) => {
+		if(err) {
+			console.error(err);
+		}
+		else
+		{
+			res.redirect('/driver_advertise');
+		}
+	});
+});
+
 /* GET */
 router.get('/', function(req, res, next) {
 	var driver_username = req.signedCookies.user_id;
