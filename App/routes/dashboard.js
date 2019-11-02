@@ -26,10 +26,23 @@ router.get('/', function(req, res, next) {
 					}); 
 				}
 				if (data2.rows.length == 1){
-					res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, isLoggedin: req.signedCookies.user_id, status: "Registered" });
-				}
+					pool.query(sql_query.query.driver_rating,[req.signedCookies.user_id], (err3,data3) =>{
+						if(err3){
+							res.json({
+								message : 'ERROR3'
+							});
+						}
+						if(data3.rows.length == 1){
+								res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: data3.rows[0].driver_rating, isLoggedin: req.signedCookies.user_id, status: "Registered" });
+							}
+						else {
+							data3.rows[0] = { driver_username: req.signedCookies.user_id , driver_rating: "No Rating" };
+							res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: data3.rows[0].driver_rating, isLoggedin: req.signedCookies.user_id, status: "Registered" });
+						}
+						});
+					}
 				else{
-					res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, isLoggedin: req.signedCookies.user_id, status: "Not Registered" });
+					res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: "No Rating", isLoggedin: req.signedCookies.user_id, status: "Not Registered" });
 				}
 			});
 		}
