@@ -3,7 +3,9 @@ DROP TABLE IF EXISTS advertised_trips CASCADE;
 DROP TABLE IF EXISTS distance_fare CASCADE;
 DROP TABLE IF EXISTS location_dist CASCADE;
 DROP TABLE IF EXISTS surge CASCADE;
+DROP TABLE IF EXISTS membership CASCADE;
 DROP TABLE IF EXISTS vehicles CASCADE;
+DROP TABLE IF EXISTS drives CASCADE;
 DROP TABLE IF EXISTS category CASCADE;
 DROP TABLE IF EXISTS passengers CASCADE;
 DROP TABLE IF EXISTS drivers CASCADE;
@@ -15,7 +17,7 @@ DROP FUNCTION IF EXISTS get_price CASCADE;
 DROP TRIGGER IF EXISTS check_driver_has_advertised_trips_delete_user ON users;
 DROP FUNCTION IF EXISTS driver_has_advertised_bid CASCADE;
 DROP TRIGGER IF EXISTS check_driver_has_advertised_trip_with_bid_won_uncompleted_trips ON users;
-DROP FUNCTION IF EXISTS unable_delete_driver_advertised_trip_with_bid_won_uncompleted_trips CASCADE;
+DROP FUNCTION IF EXISTS unable_delete_driver_with_bid_won_uncompleted_trips CASCADE;
 DROP TRIGGER IF EXISTS check_passenger_has_trip_with_bid_won_uncompleted_trips ON users;
 DROP FUNCTION IF EXISTS unable_delete_passenger_with_bid_won_uncompleted_trips CASCADE;
 
@@ -112,19 +114,32 @@ SELECT * FROM CATEGORY;
 
 
 CREATE TABLE  vehicles (
-	driver_username VARCHAR(256) REFERENCES drivers (driver_username) ON UPDATE CASCADE ON DELETE CASCADE,
 	license_plate VARCHAR(256) NOT NULL UNIQUE,
 	model VARCHAR(256) REFERENCES category (model) ON UPDATE CASCADE ON DELETE CASCADE,
-	PRIMARY KEY (driver_username, license_plate , model),
+	PRIMARY KEY (license_plate , model),
 	
 	--license_plate: alphabets or numbers only. 
-	Constraint check_license_plate CHECK (license_plate ~ '^[a-zA-Z0-9]*$')
+	Constraint check_license_plate CHECK (license_plate ~ '^[a-zA-Z0-9]*$'),
+	
+	--model: whitespaces, alphabets or numbers only.  
+	Constraint check_model CHECK (model ~ '^[a-zA-Z0-9\s]*$')
 );
-INSERT INTO vehicles VALUES ('hafiz','S1234567J', 'Honda'); 
-INSERT INTO vehicles VALUES ('hafiz''S9876542E', 'Mercedes'); 
-INSERT INTO vehicles VALUES ('vernon','S1234567J', 'Honda'); 
-INSERT INTO vehicles VALUES ('vernon','S9876542E', 'Mercedes'); 
+INSERT INTO vehicles VALUES ('S1234567J', 'Honda'); 
+INSERT INTO vehicles VALUES ('S9876542E', 'Mercedes'); 
 SELECT * FROM VEHICLES;
+
+
+CREATE TABLE  drives (
+	driver_username VARCHAR(256) REFERENCES drivers (driver_username) ON UPDATE CASCADE ON DELETE CASCADE,
+	license_plate VARCHAR(256)  REFERENCES vehicles (license_plate) ON UPDATE CASCADE ON DELETE CASCADE,
+	PRIMARY KEY (driver_username, license_plate)
+	
+);
+INSERT INTO drives VALUES ('hafiz','S1234567J'); 
+INSERT INTO drives VALUES ('hafiz','S9876542E'); 
+INSERT INTO drives VALUES ('vernon','S1234567J'); 
+INSERT INTO drives VALUES ('vernon','S9876542E'); 
+SELECT * FROM drives;
 
 
 CREATE TABLE  surge (
@@ -144,6 +159,21 @@ INSERT INTO surge VALUES ('Evening', '3.5');
 INSERT INTO surge VALUES ('Night', '4'); 
 SELECT * FROM SURGE;
 
+CREATE TABLE  membership (
+	category VARCHAR(256) NOT NULL UNIQUE,
+	trips_required numeric
+	
+	--category: whitespaces, alphabets or numbers only.  
+	Constraint check_category CHECK (category ~ '^[a-zA-Z0-9\s]*$')
+	
+);
+INSERT INTO membership VALUES ('gold', '10'); 
+INSERT INTO membership VALUES ('silver', '5'); 
+INSERT INTO membership VALUES ('bronze', '2'); 
+INSERT INTO membership VALUES ('green', '0');  
+SELECT * FROM membership;
+
+
 CREATE TABLE location_dist (
 	location VARCHAR(256) PRIMARY KEY,
 	metrics numeric NOT NULL
@@ -155,7 +185,7 @@ INSERT INTO location_dist VALUES ('City Hall', '7');
 INSERT INTO location_dist VALUES ('NUS', '9');
 INSERT INTO location_dist VALUES ('Jurong', '11');
 INSERT INTO location_dist VALUES ('Boon Lay', '13');
-
+SELECT * FROM location_dist;
 
 CREATE TABLE  distance_fare (
 	distance VARCHAR(256) NOT NULL UNIQUE,
@@ -172,8 +202,6 @@ INSERT INTO distance_fare VALUES ('Subsequent Km', '2.5');
 SELECT * FROM DISTANCE_FARE;
 
 
-DROP TABLE IF EXISTS bids CASCADE;
-DROP TABLE IF EXISTS advertised_trips CASCADE;
 CREATE TABLE advertised_trips (
 	driver_username VARCHAR(256) NOT NULL REFERENCES drivers (driver_username) ON UPDATE CASCADE ON DELETE CASCADE,
 	s_location TEXT NOT NULL,
@@ -227,7 +255,8 @@ CREATE TABLE bids (
 	is_win BOOLEAN DEFAULT FALSE,
 	mode_of_acceptance VARCHAR(256),
 	is_completed BOOLEAN DEFAULT FALSE,
-	rating NUMERIC 
+	rating NUMERIC,
+	bid_time TIMESTAMP
 	
 	--mode_of_acceptance: 'Driver Selected' OR 'System'
 	Constraint check_mode_of_acceptance CHECK (mode_of_acceptance = 'Driver Selected' OR mode_of_acceptance = 'System'),
@@ -243,10 +272,7 @@ CREATE TABLE bids (
 		
 	PRIMARY KEY (passenger_username, driver_username, license_plate, s_time, e_time, s_date, e_date)
 );
-INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
-INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
-INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3', 'true', 'System', 'false');
-SELECT * FROM BIDS;
+
 
 
 CREATE OR REPLACE FUNCTION get_price(dist numeric)
@@ -315,7 +341,7 @@ AND s_time > to_timestamp(to_char(now(),'HH:MM:SS'),'HH:MM:SS')::time;
 --------------------------------------------------------------------------------------------------------------------
 --Trigger 2
 
-CREATE OR REPLACE FUNCTION unable_delete_driver_advertised_trip_with_bid_won_uncompleted_trips()
+CREATE OR REPLACE FUNCTION unable_delete_driver_with_bid_won_uncompleted_trips()
 RETURNS TRIGGER AS $$
 	DECLARE count NUMERIC;
 	BEGIN
@@ -337,7 +363,7 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER check_driver_has_advertised_trip_with_bid_won_uncompleted_trips
 BEFORE DELETE ON users 
 FOR EACH ROW 
-EXECUTE PROCEDURE unable_delete_driver_advertised_trip_with_bid_won_uncompleted_trips();
+EXECUTE PROCEDURE unable_delete_driver_with_bid_won_uncompleted_trips();
 ----------------------------------
 --Test trigger 2--
 --delete from users where username = 'hafiz';
@@ -385,6 +411,27 @@ passenger_username = 'gervaise'
 AND is_completed = 'false' 
 AND is_win = 'true';
 --------------------------------------------------------------------------------------------------------------------
+--Trigger 4
+CREATE OR REPLACE FUNCTION trigger_set_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+	RAISE NOTICE 'Bids Trigger 4: Insert/update timestamp';
+  NEW.bid_time = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_timestamp
+BEFORE INSERT or UPDATE ON bids
+FOR EACH ROW
+EXECUTE PROCEDURE trigger_set_timestamp();
+--------------------------------------------------------------------------------------------------------------------
 
 
-
+INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed, rating) 
+	VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
+INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist) 
+	VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
+INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed) 
+	VALUES('10', 'gervaise', 'hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3', 'true', 'System', 'false');
+SELECT * FROM BIDS;
