@@ -22,8 +22,15 @@ $(() => {
         delete_users(user)
             .then(result => {
                 console.log(result);
-                window.location = '../';
-                window.alert("User have been deleted successfully");
+                logout().then(result => {
+                    window.location = '../'
+                    window.alert("User have been deleted successfully");
+                }).catch(error => {
+                    console.error(error);
+                    const $errorMessage = $('#errorMessage');
+                    $errorMessage.text(error.responseJSON.message);
+                    $errorMessage.show();
+                });
             }).catch(error => {
                 console.error(error);
                 const $errorMessage = $('#errorMessage');
@@ -36,4 +43,8 @@ $(() => {
 
 function delete_users(user) {
     return $.post('http://localhost:3000/dashboard/delete_users', user);
+}
+
+function logout() {
+    return $.get('http://localhost:3000/auth/logout');
 }
