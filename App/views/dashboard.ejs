@@ -53,6 +53,10 @@
 											<input type="text" required="required" readonly class="form-control-plaintext" id="gender" value="<%= data[0].gender %>"
 											 name="gender">
 										</div>
+                    					<label for="Membership" class="col-sm-2 col-form-label"><b>Membership:</b></label>
+										<div class="col-sm-4">
+											<input type="text" required="required" readonly class="form-control-plaintext" id="membership" value="<%= data[0].gender %>"  name="gender">
+										</div>
 									</div>
 									<div class="form-group row">
 										<label for="display_name" class="col-sm-2 col-form-label">
@@ -85,25 +89,23 @@
 							<form id="form2" method="get" action="/driver_update">
 								<div class="card-body">
 									<div class="form-group row">
-										<label for="username" class="col-sm-2 col-form-label">
-											<b>User ID:</b>
-										</label>
+										<label for="username" class="col-sm-2 col-form-label"><b>User ID:</b></label>
 										<div class="col-sm-4">
-											<input type="text" required="required" readonly class="form-control-plaintext" id="username" value="<%= data[0].username %>"
-											 name="username">
+											<input type="text" required="required" readonly class="form-control-plaintext" id="username"  value="<%= data[0].username %>"  name="username">
 										</div>
-										<div class="form-group row">
-												<label for="username" class="col-sm-2 col-form-label"><b>Driver rating:</b></label>
-												<div class="col-sm-4">
-													<input type="text" required="required" readonly class="form-control-plaintext" id="username"  value="<%= data3 %>"  name="username">
-												</div>
-											</div>
+										<label for="registered" class="col-sm-2 col-form-label"><b>Driver:</b></label>
+										<div class="col-sm-4">
+											<input type="text" required="required" readonly class="form-control-plaintext" id="driver" value="<%= status %>"  name="driver">
+										</div>
 									</div>
+									<div class="form-group row">
+											<label for="username" class="col-sm-2 col-form-label"><b>Driver rating:</b></label>
+											<div class="col-sm-4">
+												<input type="text" required="required" readonly class="form-control-plaintext" id="username"  value="<%= data3 %>"  name="username">
+											</div>
+										</div>
 								</div>
-								<div class="card-footer small text-muted">
-									<button type="submit" class="btn btn-secondary">Register/Update driver infomation</button> &nbsp;&nbsp;&nbsp;
-									<span class="badge badge-pill badge-info"></span>
-								</div>
+								<div class="card-footer small text-muted"><button type="submit" class="btn btn-secondary">Register/Update driver infomation</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
 							</form>
 						</div>
 

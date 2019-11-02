@@ -6,4 +6,9 @@ router.get('/', function(req, res, next) {
     res.redirect('./login');
 });
 
+router.post('/', function(req, res, next) {
+    res.clearCookie('user_id');
+});
+
+
 module.exports = router;
