@@ -20,7 +20,9 @@ sql.query = {
     display_bids: "SELECT bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, is_win FROM bids WHERE passenger_username= $1 AND is_completed=$2",
     delete_bid: "DELETE FROM bids WHERE passenger_username = $1 AND driver_username = $2 AND s_time = $3 AND e_time = $4 AND s_date = $5 AND e_date = $6 AND license_plate = $7 AND is_win = false",
     end_trip: "UPDATE bids SET is_completed='t' , rating=$8 WHERE passenger_username = $1 AND driver_username = $2 AND s_time = $3 AND e_time = $4 AND s_date = $5 AND e_date = $6 AND license_plate = $7 AND is_win = true",
-    filter_advertised_trips: "SELECT * FROM advertised_trips WHERE s_location = $1"
+    filter_advertised_trips: "SELECT * FROM advertised_trips WHERE s_location = $1",
+    //trigger
+    delete_users: "DELETE FROM users WHERE username = $1"
 }
 
 module.exports = sql
