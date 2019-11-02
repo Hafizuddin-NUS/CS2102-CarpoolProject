@@ -22,21 +22,16 @@ $(() => {
         delete_users(user)
             .then(result => {
                 console.log(result);
-                logout().then(result => {
+                logout().then(result2 => {
+                    console.log(result2);
                     window.location = '../'
                     window.alert("User have been deleted successfully");
                 }).catch(error => {
                     console.error(error);
-                    const $errorMessage = $('#errorMessage');
-                    $errorMessage.text(error.responseJSON.message);
-                    $errorMessage.show();
                 });
             }).catch(error => {
                 console.error(error);
-                const $errorMessage = $('#errorMessage');
-                $errorMessage.text(error.responseJSON.message);
-                $errorMessage.show();
-                //window.alert("Invalid account");
+                window.alert("Unable to delete user");
             });
     });
 });

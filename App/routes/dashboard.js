@@ -7,6 +7,7 @@ const pool = new Pool({
 	connectionString: process.env.DATABASE_URL
 });
 
+
 /* SQL Query */
 var sql_query2 = 'SELECT * FROM users WHERE username =';
 
@@ -54,12 +55,30 @@ router.get('/', function (req, res, next) {
 
 router.post('/delete_users', (req, res, next) => {
 	var username = req.signedCookies.user_id;
-	pool.query(sql_query.query.delete_users, [username], (err, data2) => {
+	pool.query(sql_query.query.delete_users, [username], function (err, data2) {
 		if (err) {
 			console.error(err);
 		}
-		else {
+		else if(data2.rowCount== 0) {
+			next(new Error('Invalid'));
+			console.log(data2.rowCount + "failed");
+			console.log(data2);
+			pool.connect().then(client => {
+				client.query(sql_query.query.delete_users, [username])
+				.then(res => {
+					client.release()
+					console.log(res) // your callback here
+				})
+				.catch(e => {
+				client.release()
+				console.log(err.stack) // your callback here
+				})
+			});
+		}
+		else{
+			console.log(data2.rowCount+ " success");
 			res.redirect('../');
+			console.log(data2);
 		}
 	});
 });
