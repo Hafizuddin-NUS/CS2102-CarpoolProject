@@ -9,6 +9,15 @@ DROP TABLE IF EXISTS passengers CASCADE;
 DROP TABLE IF EXISTS drivers CASCADE;
 DROP TABLE IF EXISTS addressbook CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
+--other functions 
+DROP FUNCTION IF EXISTS get_price CASCADE;
+--for triggers related
+DROP TRIGGER IF EXISTS check_driver_has_advertised_trips_delete_user ON users;
+DROP FUNCTION IF EXISTS driver_has_advertised_bid CASCADE;
+DROP TRIGGER IF EXISTS check_driver_has_advertised_trip_with_bid_won_uncompleted_trips ON users;
+DROP FUNCTION IF EXISTS unable_delete_driver_advertised_trip_with_bid_won_uncompleted_trips CASCADE;
+DROP TRIGGER IF EXISTS check_passenger_has_trip_with_bid_won_uncompleted_trips ON users;
+DROP FUNCTION IF EXISTS unable_delete_passenger_with_bid_won_uncompleted_trips CASCADE;
 
 --SET datestyle = dmy;
 ALTER DATABASE "Carpooling" SET datestyle TO "ISO, DMY";
@@ -195,8 +204,9 @@ CREATE TABLE advertised_trips (
 	
 	PRIMARY KEY(driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate)
 );
-INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2019', '17/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO advertised_trips VALUES('hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2019', '18/9/2019', 'S1234567J', '2.9', '1.3');
+INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2');
+INSERT INTO advertised_trips VALUES('hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
+INSERT INTO advertised_trips VALUES('hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3');
 SELECT * FROM advertised_trips;
 
 CREATE TABLE bids (
@@ -229,12 +239,13 @@ CREATE TABLE bids (
 	Constraint check_driver_username CHECK (driver_username != passenger_username),
 	
 	FOREIGN KEY (driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate) 
-		REFERENCES advertised_trips (driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate),
+		REFERENCES advertised_trips (driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate) ON UPDATE CASCADE ON DELETE CASCADE,
 		
 	PRIMARY KEY (passenger_username, driver_username, license_plate, s_time, e_time, s_date, e_date)
 );
-INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2019', '17/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
-INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2019', '18/9/2019', 'S1234567J', '2.9', '1.3');
+INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
+INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
+INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3', 'true', 'System', 'false');
 SELECT * FROM BIDS;
 
 
@@ -255,3 +266,125 @@ AS $$
 	END;
 $$  LANGUAGE 'plpgsql';
 select get_price(1);
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+--Trigger 1
+
+CREATE OR REPLACE FUNCTION driver_has_advertised_bid()
+RETURNS TRIGGER AS $$
+	DECLARE count NUMERIC;
+	BEGIN
+		SELECT COUNT(*) INTO count FROM bids b
+		WHERE OLD.username = B.driver_username
+		AND B.is_completed = 'false' 
+		AND B.is_win = 'false'
+		AND B.s_date > now()
+		AND B.s_time > to_timestamp(to_char(now(),'HH:MM:SS'),'HH:MM:SS')::time;
+		
+		
+		IF count > 0 THEN	
+			RAISE NOTICE 'Bids Trigger 1: Cannot delete driver that has advertised trips';
+			RETURN NULL; -- prevent
+		ELSE
+			RETURN OLD; -- allow
+		END IF;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_driver_has_advertised_trips_delete_user
+BEFORE DELETE ON users 
+FOR EACH ROW 
+EXECUTE PROCEDURE driver_has_advertised_bid();
+----------------------------------
+--Test trigger 1--
+--delete from users where username = 'hafiz';
+
+----------------------------------
+
+select * from bids where
+driver_username = 'hafiz' 
+AND is_completed = 'false' 
+AND is_win = 'false'
+AND s_date > now()
+AND s_time > to_timestamp(to_char(now(),'HH:MM:SS'),'HH:MM:SS')::time;
+
+--------------------------------------------------------------------------------------------------------------------
+--Trigger 2
+
+CREATE OR REPLACE FUNCTION unable_delete_driver_advertised_trip_with_bid_won_uncompleted_trips()
+RETURNS TRIGGER AS $$
+	DECLARE count NUMERIC;
+	BEGIN
+		SELECT COUNT(*) INTO count FROM bids b
+		WHERE OLD.username = B.driver_username
+		AND B.is_completed = 'false' 
+		AND B.is_win = 'true';
+		
+		
+		IF count > 0 THEN	
+			RAISE NOTICE 'Bids Trigger 2: Cannont delete driver when there is advertised trip with bid won, but ride is uncompleted';
+			RETURN NULL; -- prevent
+		ELSE
+			RETURN OLD; -- allow
+		END IF;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_driver_has_advertised_trip_with_bid_won_uncompleted_trips
+BEFORE DELETE ON users 
+FOR EACH ROW 
+EXECUTE PROCEDURE unable_delete_driver_advertised_trip_with_bid_won_uncompleted_trips();
+----------------------------------
+--Test trigger 2--
+--delete from users where username = 'hafiz';
+
+----------------------------------
+
+select * from bids where
+driver_username = 'hafiz' 
+AND is_completed = 'false' 
+AND is_win = 'true';
+--------------------------------------------------------------------------------------------------------------------
+--Trigger 3
+
+CREATE OR REPLACE FUNCTION unable_delete_passenger_with_bid_won_uncompleted_trips()
+RETURNS TRIGGER AS $$
+	DECLARE count NUMERIC;
+	BEGIN
+		SELECT COUNT(*) INTO count FROM bids b
+		WHERE OLD.username = B.passenger_username
+		AND B.is_completed = 'false' 
+		AND B.is_win = 'true';
+		
+		
+		IF count > 0 THEN	
+			RAISE NOTICE 'Bids Trigger 3: Cannont delete passenger when there is trip in bids that passenger won, but ride is uncompleted';
+			RETURN NULL; -- prevent
+		ELSE
+			RETURN OLD; -- allow
+		END IF;
+	END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_passenger_has_trip_with_bid_won_uncompleted_trips
+BEFORE DELETE ON users 
+FOR EACH ROW 
+EXECUTE PROCEDURE unable_delete_passenger_with_bid_won_uncompleted_trips();
+----------------------------------
+--Test trigger 3--
+--delete from users where username = 'gervaise';
+
+----------------------------------
+
+select * from bids where
+passenger_username = 'gervaise' 
+AND is_completed = 'false' 
+AND is_win = 'true';
+--------------------------------------------------------------------------------------------------------------------
+
+
+
