@@ -276,7 +276,7 @@ CREATE TABLE bids (
 
 CREATE OR REPLACE FUNCTION get_price(dist numeric)
 RETURNS numeric
-AS $$
+AS $TAG1$
 	DECLARE firstKm numeric;
 	DECLARE subsequentKm numeric;
 	
@@ -289,7 +289,7 @@ AS $$
 			return firstKm + (dist-1) * subsequentKm;
 		END IF;
 	END;
-$$  LANGUAGE 'plpgsql';
+$TAG1$  LANGUAGE 'plpgsql';
 select get_price(1);
 
 
@@ -300,7 +300,7 @@ select get_price(1);
 --Trigger 1
 
 CREATE OR REPLACE FUNCTION driver_has_advertised_bid()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $TAG2$
 	DECLARE count NUMERIC;
 	BEGIN
 		SELECT COUNT(*) INTO count FROM bids b
@@ -318,7 +318,7 @@ RETURNS TRIGGER AS $$
 			RETURN OLD; -- allow
 		END IF;
 	END;
-$$ LANGUAGE plpgsql;
+$TAG2$ LANGUAGE plpgsql;
 
 CREATE TRIGGER check_driver_has_advertised_trips_delete_user
 BEFORE DELETE ON users 
@@ -341,7 +341,7 @@ AND s_time > to_timestamp(to_char(now(),'HH:MM:SS'),'HH:MM:SS')::time;
 --Trigger 2
 
 CREATE OR REPLACE FUNCTION unable_delete_driver_with_bid_won_uncompleted_trips()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $TAG3$
 	DECLARE count NUMERIC;
 	BEGIN
 		SELECT COUNT(*) INTO count FROM bids b
@@ -357,7 +357,7 @@ RETURNS TRIGGER AS $$
 			RETURN OLD; -- allow
 		END IF;
 	END;
-$$ LANGUAGE plpgsql;
+$TAG3$ LANGUAGE plpgsql;
 
 CREATE TRIGGER check_driver_has_advertised_trip_with_bid_won_uncompleted_trips
 BEFORE DELETE ON users 
@@ -378,7 +378,7 @@ AND is_win = 'true';
 --Trigger 3
 
 CREATE OR REPLACE FUNCTION unable_delete_passenger_with_bid_won_uncompleted_trips()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $TAG4$
 	DECLARE count NUMERIC;
 	BEGIN
 		SELECT COUNT(*) INTO count FROM bids b
@@ -394,7 +394,7 @@ RETURNS TRIGGER AS $$
 			RETURN OLD; -- allow
 		END IF;
 	END;
-$$ LANGUAGE plpgsql;
+$TAG4$ LANGUAGE plpgsql;
 
 CREATE TRIGGER check_passenger_has_trip_with_bid_won_uncompleted_trips
 BEFORE DELETE ON users 
@@ -414,13 +414,13 @@ AND is_win = 'true';
 --------------------------------------------------------------------------------------------------------------------
 --Trigger 4
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER AS $TAG5$
 BEGIN
 	RAISE NOTICE 'Bids Trigger 4: Insert/update timestamp';
   NEW.bid_time = NOW();
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$TAG5$ LANGUAGE plpgsql;
 
 CREATE TRIGGER set_timestamp
 BEFORE INSERT or UPDATE ON bids
@@ -485,12 +485,9 @@ INSERT INTO bids VALUES('30', 'hafiz','vernon', 'Expo', 'NUS', '13:22', '14:22',
 INSERT INTO bids VALUES('30', 'hafiz','vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3', 'true', 'System', 'true', '5');
 INSERT INTO bids VALUES('30', 'vernon','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '4');
 INSERT INTO bids VALUES('30', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3', 'true', 'System', 'true', '5');
-SELECT * FROM BIDS;
 
-INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed, rating) 
-	VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
-INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist) 
-	VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
-INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed) 
-	VALUES('10', 'gervaise', 'hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3', 'true', 'System', 'false');
+INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed, rating) VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
+INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist) VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
+INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed) VALUES('10', 'gervaise', 'hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3', 'true', 'System', 'false');
+
 SELECT * FROM BIDS;
