@@ -18,16 +18,45 @@ router.post('/advertise', (req, res, next) => {
 	var e_time = req.body.e_time;
 	var s_date = req.body.s_date;
 	var e_date = req.body.e_date;
-	var min_bid = '5';
-	var total_dist = '10';
+	var s_time_parsed = s_time.split(":");
+	if (6 < parseInt(s_time_parsed[0]) && parseInt(s_time_parsed[0]) <= 9) {
+		var surge = 'Morning Peak';
+	} else if (9 < parseInt(s_time_parsed[0]) && parseInt(s_time_parsed[0]) <= 12) {
+		var surge = 'Morning';
+	} else if (12 < parseInt(s_time_parsed[0]) && parseInt(s_time_parsed[0]) <= 17 ) {
+		var surge = 'Afternoon';
+	} else if (17 < parseInt(s_time_parsed[0]) && parseInt(s_time_parsed[0]) <= 20 ) {
+		var surge = 'Evening';
+	} else {
+		var surge = 'Night';
+	}
+	var total_dist = 0;
+	var min_bid = 0;
 	var driver_rating = '5';
-	pool.query(sql_query.query.add_advertised_trips, [driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, driver_rating],(err, data2) => {
-		if(err) {
+	pool.query(sql_query.query.get_dist,[s_location, e_location],(err,data) => {
+		if (err){
 			console.error(err);
-		}
-		else
-		{
-			res.redirect('/driver_advertise');
+		} else {
+			total_dist = data.rows[0].dist;
+			pool.query(sql_query.query.get_min_bid, [s_location, e_location, surge],(err2, data2) => {
+				if(err2) {
+					console.error(err2);
+				}
+				else
+				{
+					min_bid = data2.rows[0].price;
+					pool.query(sql_query.query.add_advertised_trips, [driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist , driver_rating],(err3, data3) => {
+						if(err3) {
+							console.error(err);
+						}
+						else
+						{
+							console.log(parseInt(s_time_parsed[0]), " " + surge);
+							res.redirect('/driver_advertise');
+						}
+					});
+				}
+			});
 		}
 	});
 });
