@@ -14,6 +14,7 @@ router.get('/', function(req, res, next) {
 /* SQL Query */
 var sql_query = 'SELECT * FROM users WHERE';
 var add_user_query = 'INSERT INTO users VALUES';
+var add_passenger_query = 'INSERT INTO passengers VALUES';
 
 router.post('/', (req, res, next) => {
     var check_username_query = sql_query +" username = '" + req.body.username + "' OR email = '"+ req.body.email + "'" +';';
@@ -37,10 +38,22 @@ router.post('/', (req, res, next) => {
                 // Construct Specific SQL Query
                 var insert_new_user = add_user_query + "('" + username + "','" + hash + "','" + gender + "','" + phone_num + "','" + email + "','" + display_name + "')";
                 pool.query(insert_new_user, (err, data) => {
-                    res.json({
-                        message : 'User account created!'
-                    });
+                    if(err){
+                        console.log(err);
+                    }
+                    else {
+                        var insert_new_passenger = add_passenger_query + "('" + username + "')"; 
+                        pool.query(insert_new_passenger, (err2, data2) => {
+                            if(err2){
+                                console.log(err2);
+                            }
+                            else {
+                                res.redirect('../')
+                            }
+                        });
+                    }
                 }); 
+    
             });
         }
         else if(data.rows.length > 0) {
