@@ -10,7 +10,8 @@ sql.query = {
     get_model: "SELECT * FROM category WHERE type=$1",
     get_location: "SELECT location FROM location_dist",
     add_driver: "INSERT INTO drivers VALUES($1) ",
-
+    get_dist: "SELECT ABS(A.metrics - B.metrics) AS dist FROM location_dist A, location_dist B WHERE A.location=$1 AND B.location=$2",
+    get_min_bid: "SELECT (surge_rate*FinalLocation) AS price FROM (SELECT (SELECT get_price(ABS(A.locationA - A.locationB))) AS FinalLocation FROM (SELECT A.metrics AS locationA, B.metrics AS locationB FROM location_dist A, location_dist B WHERE A.location=$1 AND B.location=$2) AS A) AS B NATURAL JOIN (SELECT surge_rate FROM surge WHERE time=$3) AS C",
     add_advertised_trips: "INSERT INTO advertised_trips VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)",
     driver_advertised_trips: "SELECT * FROM advertised_trips WHERE driver_username = $1",
     all_advertised_trips: "SELECT * FROM advertised_trips",
