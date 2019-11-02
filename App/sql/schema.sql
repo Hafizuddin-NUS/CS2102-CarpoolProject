@@ -159,7 +159,6 @@ CREATE TABLE  distance_fare (
 	Constraint check_price CHECK (price > 0)
 );
 INSERT INTO distance_fare VALUES ('First Km', '3.5'); 
-INSERT INTO distance_fare VALUES ('Next 4 Km', '2.9'); 
 INSERT INTO distance_fare VALUES ('Subsequent Km', '2.5'); 
 SELECT * FROM DISTANCE_FARE;
 
@@ -237,3 +236,22 @@ CREATE TABLE bids (
 INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2019', '17/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
 INSERT INTO bids VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2019', '18/9/2019', 'S1234567J', '2.9', '1.3');
 SELECT * FROM BIDS;
+
+
+CREATE OR REPLACE FUNCTION get_price(dist numeric)
+RETURNS numeric
+AS $$
+	DECLARE firstKm numeric;
+	DECLARE subsequentKm numeric;
+	
+	BEGIN
+		SELECT price INTO firstKm FROM distance_fare WHERE distance_fare.distance = 'First Km';
+		SELECT price INTO subsequentKm FROM distance_fare WHERE distance_fare.distance = 'Subsequent Km';
+		IF(dist <= 1) THEN
+			return firstKm;
+		ELSE 
+			return firstKm + (dist-1) * subsequentKm;
+		END IF;
+	END;
+$$  LANGUAGE 'plpgsql';
+select get_price(1);
