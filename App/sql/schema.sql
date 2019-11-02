@@ -263,6 +263,9 @@ CREATE TABLE bids (
 	--Driver cannot bid himself
 	Constraint check_driver_username CHECK (driver_username != passenger_username),
 	
+	--Cannot have rating without trip completed = true
+	Constraint check_rating CHECK ((is_completed is true AND rating is not null) OR (is_completed is false AND rating is null)),
+	
 	FOREIGN KEY (driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate) 
 		REFERENCES advertised_trips (driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate) ON UPDATE CASCADE ON DELETE CASCADE,
 		
