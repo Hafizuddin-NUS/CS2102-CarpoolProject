@@ -1,7 +1,7 @@
 $(() => {
 
     
-    $('form').submit((event) => {
+    $('#form2').submit((event) => {
         event.preventDefault();
         const driver_status = $('#driver').val();
 
@@ -9,12 +9,8 @@ $(() => {
             window.location = '/driver_update';
         }
         else{
-            window.location = '/dashboard';
+            window.location = '/driver_update/add_driver';
         }
     });
 
 });
-
-function add_driver() {
-    return $.post('http://localhost:3000/driver_update');
-}
