@@ -329,14 +329,14 @@ EXECUTE PROCEDURE driver_has_advertised_bid();
 --delete from users where username = 'hafiz';
 
 ----------------------------------
-
+/*
 select * from bids where
 driver_username = 'hafiz' 
 AND is_completed = 'false' 
 AND is_win = 'false'
 AND s_date > now()
 AND s_time > to_timestamp(to_char(now(),'HH:MM:SS'),'HH:MM:SS')::time;
-
+*/
 --------------------------------------------------------------------------------------------------------------------
 --Trigger 2
 
@@ -368,11 +368,12 @@ EXECUTE PROCEDURE unable_delete_driver_with_bid_won_uncompleted_trips();
 --delete from users where username = 'hafiz';
 
 ----------------------------------
-
+/*
 select * from bids where
 driver_username = 'hafiz' 
 AND is_completed = 'false' 
 AND is_win = 'true';
+*/
 --------------------------------------------------------------------------------------------------------------------
 --Trigger 3
 
@@ -404,11 +405,12 @@ EXECUTE PROCEDURE unable_delete_passenger_with_bid_won_uncompleted_trips();
 --delete from users where username = 'gervaise';
 
 ----------------------------------
-
+/*
 select * from bids where
 passenger_username = 'gervaise' 
 AND is_completed = 'false' 
 AND is_win = 'true';
+*/
 --------------------------------------------------------------------------------------------------------------------
 --Trigger 4
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
