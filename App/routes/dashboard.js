@@ -11,7 +11,6 @@ const pool = new Pool({
 var sql_query2 = 'SELECT * FROM users WHERE username =';
 
 router.get('/', function (req, res, next) {
-	res.clearCookie('user_id');
 	var get_user_info = sql_query2 + "'" + req.signedCookies.user_id + "'";
 	pool.query(get_user_info, (err, data) => {
 		if (err) {
