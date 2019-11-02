@@ -1,7 +1,7 @@
 $(() => {
 
     
-    $('form').submit((event) => {
+    $('#form2').submit((event) => {
         event.preventDefault();
         const driver_status = $('#driver').val();
 
