@@ -7,6 +7,7 @@ const pool = new Pool({
 	connectionString: process.env.DATABASE_URL
 });
 
+
 /* SQL Query */
 var sql_query2 = 'SELECT * FROM users WHERE username =';
 
@@ -52,16 +53,56 @@ router.get('/', function (req, res, next) {
 	});
 });
 
+
 router.post('/delete_users', (req, res, next) => {
 	var username = req.signedCookies.user_id;
-	pool.query(sql_query.query.delete_users, [username], (err, data2) => {
+	pool.query(sql_query.query.delete_users, [username], function (err, data2) {
 		if (err) {
-			console.error(err);
+			//console.error(err);
+			next(new Error(err));
 		}
-		else {
-			res.redirect('../');
+		else if(data2.rowCount== 0) {
+			doA().then(function(msg_from_database) {
+				res.json({	
+					message: 'Unable to delete user',
+					trggier_msg: msg_from_database
+				});
+			});
+		}
+		else{
+			res.json({	
+				message: 'Successfully deleted user',
+				rows_deleted: data2.rowCount
+			});
 		}
 	});
 });
 
+
+//Running ASYNC functions in SYNC way
+//I promise that database will return a result, if my async notification returns result, resolve it.
+function doA() {
+	return new Promise(function(resolve,reject) {
+		// Connect to Postgres 
+		pool.connect( function(err, client) {
+			if(err) {
+			  console.log(err);
+			  reject(err);
+			}
+		  
+			// Listen for all pg_notify channel messages
+			client.on('notification', function(msg) {
+				//console.log(msg);	//trigger message will be inside this JSON.	
+				resolve(msg);
+			});
+			
+			// Designate which channels we are listening on. Add additional channels with multiple lines.
+			client.query('LISTEN trigger_error_channel');	//Listen to this channel called 'trigger_error_channel'.
+		});
+	})
+}
+
+
 module.exports = router;
+
+
