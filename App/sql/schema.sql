@@ -204,14 +204,14 @@ SELECT * FROM DISTANCE_FARE;
 
 
 CREATE TABLE advertised_trips (
-	driver_username VARCHAR(256) NOT NULL REFERENCES drivers (driver_username) ON UPDATE CASCADE ON DELETE CASCADE,
+	driver_username VARCHAR(256) NOT NULL,
 	s_location TEXT NOT NULL,
 	e_location TEXT NOT NULL,
 	s_time TIME NOT NULL,
 	e_time TIME NOT NULL,
 	s_date DATE NOT NULL,
 	e_date DATE NOT NULL,
-	license_plate VARCHAR(256) NOT NULL REFERENCES vehicles (license_plate) ON UPDATE CASCADE ON DELETE CASCADE,
+	license_plate VARCHAR(256) NOT NULL,
 	min_bid numeric NOT NULL,
 	total_dist numeric NOT NULL,
 	driver_rating numeric
@@ -231,6 +231,9 @@ CREATE TABLE advertised_trips (
 	Constraint check_min_bid CHECK (min_bid > 0),
 	Constraint check_total_dist CHECK (total_dist > 0),
 	
+	FOREIGN KEY (driver_username, license_plate) 
+		REFERENCES drives (driver_username, license_plate)  ON UPDATE CASCADE ON DELETE CASCADE,
+		
 	PRIMARY KEY(driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate)
 );
 

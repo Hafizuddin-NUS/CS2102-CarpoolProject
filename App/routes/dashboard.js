@@ -7,13 +7,8 @@ const pool = new Pool({
 	connectionString: process.env.DATABASE_URL
 });
 
-
-/* SQL Query */
-var sql_query2 = 'SELECT * FROM users WHERE username =';
-
 router.get('/', function (req, res, next) {
-	var get_user_info = sql_query2 + "'" + req.signedCookies.user_id + "'";
-	pool.query(get_user_info, (err, data) => {
+	pool.query(sql_query.query.get_user_info, [req.signedCookies.user_id], (err, data) => {
 		if (err) {
 			res.json({
 				message: 'ERROR'
@@ -104,5 +99,3 @@ function doA() {
 
 
 module.exports = router;
-
-

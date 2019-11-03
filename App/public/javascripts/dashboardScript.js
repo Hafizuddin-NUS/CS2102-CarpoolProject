@@ -21,7 +21,6 @@ $(() => {
         }
         delete_users(user)
             .then(result => {
-                console.log(result);
                 if(result.message == 'Unable to delete user') {
                     console.log(result);
                     window.alert(result.trggier_msg.payload);
@@ -33,7 +32,7 @@ $(() => {
                         window.alert("User have been deleted successfully");
                     }).catch(error => {
                         console.error(error);
-                    })
+                    });
                 } 
             }).catch(error => {
                 console.error(error);
