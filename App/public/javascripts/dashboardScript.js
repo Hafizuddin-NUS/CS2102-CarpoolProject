@@ -22,16 +22,21 @@ $(() => {
         delete_users(user)
             .then(result => {
                 console.log(result);
-                logout().then(result2 => {
-                    console.log(result2);
-                    window.location = '../'
-                    window.alert("User have been deleted successfully");
-                }).catch(error => {
-                    console.error(error);
-                });
+                if(result.message == 'Unable to delete user') {
+                    console.log(result);
+                    window.alert(result.trggier_msg.payload);
+                } else if (result.message == 'Successfully deleted user') {
+                    console.log(result);
+                    logout().then(result2 => {
+                        console.log(result2);
+                        window.location = '../'
+                        window.alert("User have been deleted successfully");
+                    }).catch(error => {
+                        console.error(error);
+                    })
+                } 
             }).catch(error => {
                 console.error(error);
-                window.alert("Unable to delete user");
             });
     });
 });
