@@ -396,6 +396,33 @@ AS $func3$
 	END;
 $func3$  LANGUAGE 'plpgsql';
 
+
+--trigger 5
+CREATE OR REPLACE FUNCTION system_selection()
+RETURNS TRIGGER 
+AS $TAG2$
+	DECLARE max_bid numeric;
+	DECLARE earliest_time TIMESTAMP;
+	DECLARE max_category text;
+	DECLARE winner_name VARCHAR(256);
+	
+	BEGIN
+		PERFORM tie_breaker(driver_username, s_time, e_time, s_date, e_date, license_plate) from (
+			SELECT driver_username, s_time, e_time, s_date, e_date, license_plate, count(is_win) AS counter from bids
+			WHERE is_win = 'false' 
+			group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+		) AS A1
+		WHERE A1.counter >=3;
+		RETURN NEW; -- allow
+	END;
+$TAG2$  LANGUAGE 'plpgsql';
+CREATE TRIGGER check_ties
+BEFORE INSERT ON bids 
+FOR EACH ROW 
+EXECUTE PROCEDURE system_selection();
+
+
+
 --Trigger 1
 CREATE OR REPLACE FUNCTION driver_has_advertised_bid()
 RETURNS TRIGGER AS $TAG2$
@@ -571,7 +598,6 @@ INSERT INTO bids VALUES('30', 'hafiz','vernon', 'Expo', 'NUS', '13:22', '14:22',
 INSERT INTO bids VALUES('30', 'hafiz','vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3');
 INSERT INTO bids VALUES('30', 'vernon','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2');
 INSERT INTO bids VALUES('30', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
-INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
 
 
 INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed, rating) VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
@@ -580,30 +606,6 @@ INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_
 
 --SELECT * FROM BIDS;
 
-
---trigger 5
-CREATE OR REPLACE FUNCTION system_selection()
-RETURNS TRIGGER 
-AS $TAG2$
-	DECLARE max_bid numeric;
-	DECLARE earliest_time TIMESTAMP;
-	DECLARE max_category text;
-	DECLARE winner_name VARCHAR(256);
-	
-	BEGIN
-		PERFORM tie_breaker(driver_username, s_time, e_time, s_date, e_date, license_plate) from (
-			SELECT driver_username, s_time, e_time, s_date, e_date, license_plate, count(is_win) AS counter from bids
-			WHERE is_win = 'false' 
-			group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
-		) AS A1
-		WHERE A1.counter >=3;
-		RETURN NEW; -- allow
-	END;
-$TAG2$  LANGUAGE 'plpgsql';
-CREATE TRIGGER check_ties
-BEFORE INSERT ON bids 
-FOR EACH ROW 
-EXECUTE PROCEDURE system_selection();
 
 
 --test system selection()
