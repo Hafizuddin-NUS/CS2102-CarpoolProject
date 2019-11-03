@@ -60,20 +60,7 @@ router.post('/delete_users', (req, res, next) => {
 			console.error(err);
 		}
 		else if(data2.rowCount== 0) {
-			next(new Error('Invalid'));
-			console.log(data2.rowCount + "failed");
-			console.log(data2);
-			pool.connect().then(client => {
-				client.query(sql_query.query.delete_users, [username])
-				.then(res => {
-					client.release()
-					console.log(res) // your callback here
-				})
-				.catch(e => {
-				client.release()
-				console.log(err.stack) // your callback here
-				})
-			});
+			next(new Error('Invalid'));		
 		}
 		else{
 			console.log(data2.rowCount+ " success");
@@ -82,5 +69,20 @@ router.post('/delete_users', (req, res, next) => {
 		}
 	});
 });
+
+// Connect to Postgres 
+pool.connect( function(err, client) {
+    if(err) {
+      console.log(err);
+    }
+  
+    // Listen for all pg_notify channel messages
+    client.on('notification', function(msg) {
+		console.log(msg);	//trigger message will be inside this JSON.
+    });
+    
+    // Designate which channels we are listening on. Add additional channels with multiple lines.
+    client.query('LISTEN trigger_error_channel');	//Listen to this channel called 'trigger_error_channel'.
+  });
 
 module.exports = router;
