@@ -11,16 +11,16 @@ const pool = new Pool({
 router.get('/', function (req, res, next) {
 	var location = req.query.location;
 	if (location == null) {
-		pool.query(sql_query.query.all_advertised_trips, (err, data) => {
+		pool.query(sql_query.query.all_advertised_trips,[req.signedCookies.user_id], (err, data) => {
 			if (err) {
 				console.error("Error getting info");
 			} else {
-				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 'f'], (err2, data2) => {
+				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id], (err2, data2) => {
 					if (err2) {
 						console.error("Error getting info:2");
 					}
 					else {
-						pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 't'], (err3, data3) => {
+						pool.query(sql_query.query.display_bids_completed, [req.signedCookies.user_id], (err3, data3) => {
 							if (err3) {
 								console.error("Error getting info:3");
 							} else {
@@ -37,11 +37,11 @@ router.get('/', function (req, res, next) {
 			if (err) {
 				console.error("Error getting info");
 			} else {
-				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 'f'], (err2, data2) => {
+				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id], (err2, data2) => {
 					if (err2) {
 						console.error("Error getting info:2");
 					} else {
-						pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 't'], (err3, data3) => {
+						pool.query(sql_query.query.display_bids_completed, [req.signedCookies.user_id], (err3, data3) => {
 							if (err3) {
 								console.error("Error getting info:3");
 							} else {
@@ -68,12 +68,19 @@ router.post('/add', (req, res, next) => {
 	var formatted_e_date = moment(e_date, 'ddd MMM DD YYYY hh:mm:ss [GMT]ZZ').format('DD/MM/YYYY');
 	var min_bid = req.body.min_bid;
 	var bid_price = req.body.bid_price;
-	pool.query(sql_query.query.add_bid, [bid_price, req.signedCookies.user_id, driver_username, s_location, e_location, s_time, e_time, formatted_s_date, formatted_e_date, license_plate, min_bid, "1.2"], (err, data) => {
+	pool.query(sql_query.query.get_dist, [s_location, e_location], (err, data) => {
 		if (err) {
 			console.error(err);
 		}
 		else {
-			res.redirect('./');
+			pool.query(sql_query.query.add_bid, [bid_price, req.signedCookies.user_id, driver_username, s_location, e_location, s_time, e_time, formatted_s_date, formatted_e_date, license_plate, min_bid, data.rows[0].dist], (err2, data2) => {
+				if (err2) {
+					console.error(err2);
+				}
+				else {
+					res.redirect('./');
+				}
+			});
 		}
 	});
 });

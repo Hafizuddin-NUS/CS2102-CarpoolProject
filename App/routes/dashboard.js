@@ -7,6 +7,7 @@ const pool = new Pool({
 	connectionString: process.env.DATABASE_URL
 });
 
+
 router.get('/', function (req, res, next) {
 	pool.query(sql_query.query.get_user_info, [req.signedCookies.user_id], (err, data) => {
 		if (err) {
