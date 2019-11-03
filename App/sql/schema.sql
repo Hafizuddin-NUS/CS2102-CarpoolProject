@@ -581,7 +581,7 @@ INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_
 --SELECT * FROM BIDS;
 
 
-
+--trigger 5
 CREATE OR REPLACE FUNCTION system_selection()
 RETURNS TRIGGER 
 AS $TAG2$
