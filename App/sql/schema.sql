@@ -13,6 +13,10 @@ DROP TABLE IF EXISTS addressbook CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 --other functions 
 DROP FUNCTION IF EXISTS get_price CASCADE;
+DROP FUNCTION IF EXISTS idx CASCADE;
+DROP FUNCTION IF EXISTS tie_breaker CASCADE;
+DROP FUNCTION IF EXISTS get_membership CASCADE;
+DROP FUNCTION IF EXISTS system_selection CASCADE;
 --for triggers related
 DROP TRIGGER IF EXISTS check_driver_has_advertised_trips_delete_user ON users;
 DROP FUNCTION IF EXISTS driver_has_advertised_bid CASCADE;
@@ -20,6 +24,7 @@ DROP TRIGGER IF EXISTS check_driver_has_advertised_trip_with_bid_won_uncompleted
 DROP FUNCTION IF EXISTS unable_delete_driver_with_bid_won_uncompleted_trips CASCADE;
 DROP TRIGGER IF EXISTS check_passenger_has_trip_with_bid_won_uncompleted_trips ON users;
 DROP FUNCTION IF EXISTS unable_delete_passenger_with_bid_won_uncompleted_trips CASCADE;
+
 
 --SET datestyle = dmy;
 ALTER DATABASE "Carpooling" SET datestyle TO "ISO, DMY";
@@ -297,6 +302,17 @@ $TAG1$  LANGUAGE 'plpgsql';
 select get_price(1);
 
 
+
+CREATE OR REPLACE FUNCTION idx(anyarray, anyelement)
+  RETURNS INT AS 
+$$
+  SELECT i FROM (
+     SELECT generate_series(array_lower($1,1),array_upper($1,1))
+  ) g(i)
+  WHERE $1[i] = $2
+  LIMIT 1;
+$$ LANGUAGE SQL IMMUTABLE;
+
 CREATE OR REPLACE FUNCTION get_membership(name TEXT)
 RETURNS TEXT
 AS $TAG1$
@@ -330,6 +346,55 @@ AS $TAG1$
 	END;
 $TAG1$  LANGUAGE 'plpgsql';
 select get_membership('zhihong8888');
+
+
+CREATE OR REPLACE FUNCTION tie_breaker(driver TEXT, st_time TIME, en_time TIME, st_date DATE, en_date DATE, license TEXT)
+RETURNS Text
+AS $func3$
+	DECLARE max_bid numeric;
+	DECLARE earliest_time TIMESTAMP;
+	DECLARE max_category text;
+	DECLARE winner_name VARCHAR(256);
+	
+	BEGIN
+		select * from (
+			select b.passenger_username, b.bid_price, b.bid_time, get_membership(b.passenger_username) AS membership 
+			INTO winner_name, max_bid, earliest_time, max_category from bids b
+			where bid_price >= ALL(
+				SELECT bid_price from bids bi
+				WHERE bi.driver_username = driver
+				AND bi.s_time = st_time
+				AND bi.e_time = en_time
+				AND bi.s_date = st_date
+				AND bi.e_date = en_date
+				AND bi.license_plate = license
+			)
+			AND 
+			b.driver_username = driver
+			AND b.s_time = st_time
+			AND b.e_time = en_time
+			AND b.s_date = st_date
+			AND b.e_date = en_date
+			AND b.license_plate = license
+		) AS A 
+		ORDER BY 
+			idx(array['gold','silver','bronze','green'], membership),
+			bid_time
+		LIMIT 1;
+
+		UPDATE bids SET is_win='t' WHERE bids.driver_username = driver
+				AND bids.s_time = st_time
+				AND bids.e_time = en_time
+				AND bids.s_date = st_date
+				AND bids.e_date = en_date
+				AND bids.license_plate = license
+				AND bids.bid_price = max_bid
+				AND bids.bid_time = earliest_time
+				AND bids.passenger_username = winner_name;
+		RETURN 'clear';
+
+	END;
+$func3$  LANGUAGE 'plpgsql';
 
 --Trigger 1
 CREATE OR REPLACE FUNCTION driver_has_advertised_bid()
@@ -468,7 +533,7 @@ INSERT INTO advertised_trips VALUES('hafiz', 'Jurong', 'Expo', '13:00', '14:22',
 INSERT INTO advertised_trips VALUES('hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3');
 SELECT * FROM advertised_trips;
 
-INSERT INTO bids VALUES('10', 'hafiz', 'vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
+INSERT INTO bids VALUES('30', 'hafiz', 'vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
 INSERT INTO bids VALUES('10', 'hafiz', 'vernon', 'NUS', 'Bedok', '13:00', '14:22', '20/9/2019', '20/9/2019', 'S9876542E', '2.9', '1.3');
 INSERT INTO bids VALUES('10', 'vernon', 'hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '21/9/2019', '21/9/2019', 'S1234567J', '3.5', '1.2');
 INSERT INTO bids VALUES('10', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '22/9/2019', '22/9/2019', 'S1234567J', '2.9', '1.3');
@@ -481,7 +546,7 @@ INSERT INTO bids VALUES('10', 'zhihong8888','vernon', 'NUS', 'Bedok', '13:00', '
 INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2');
 INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
 
-INSERT INTO bids VALUES('20', 'gervaise', 'vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
+INSERT INTO bids VALUES('30', 'gervaise', 'vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
 INSERT INTO bids VALUES('20', 'gervaise', 'vernon', 'NUS', 'Bedok', '13:00', '14:22', '20/9/2019', '20/9/2019', 'S9876542E', '2.9', '1.3');
 INSERT INTO bids VALUES('20', 'gervaise', 'hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '21/9/2019', '21/9/2019', 'S1234567J', '3.5', '1.2');
 INSERT INTO bids VALUES('20', 'gervaise','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '22/9/2019', '22/9/2019', 'S1234567J', '2.9', '1.3');
@@ -503,12 +568,47 @@ INSERT INTO bids VALUES('30', 'zhihong8888','vernon', 'NUS', 'Bedok', '13:00', '
 INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '25/9/2019', '25/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
 INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '26/9/2019', '26/9/2019', 'S1234567J', '2.9', '1.3', 'true', 'System', 'true', '4');
 INSERT INTO bids VALUES('30', 'hafiz','vernon', 'Expo', 'NUS', '13:22', '14:22', '27/9/2019', '27/9/2019', 'S9876542E', '3.5', '1.2', 'true', 'System', 'true', '3');
-INSERT INTO bids VALUES('30', 'hafiz','vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3', 'true', 'System', 'true', '5');
-INSERT INTO bids VALUES('30', 'vernon','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '4');
-INSERT INTO bids VALUES('30', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3', 'true', 'System', 'true', '5');
+INSERT INTO bids VALUES('30', 'hafiz','vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3');
+INSERT INTO bids VALUES('30', 'vernon','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2');
+INSERT INTO bids VALUES('30', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
+INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
+
 
 INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed, rating) VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
 INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist) VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
 INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed) VALUES('10', 'gervaise', 'hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3', 'true', 'System', 'false');
 
 SELECT * FROM BIDS;
+
+
+--test system selection()
+select * from (
+	SELECT driver_username, s_time, e_time, s_date, e_date, license_plate, count(is_win) AS counter from bids
+	WHERE is_win = 'false' 
+	group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+) AS A1
+WHERE A1.counter >=3;
+
+DROP FUNCTION IF EXISTS system_selection CASCADE;
+CREATE OR REPLACE FUNCTION system_selection()
+RETURNS TRIGGER 
+AS $TAG2$
+	DECLARE max_bid numeric;
+	DECLARE earliest_time TIMESTAMP;
+	DECLARE max_category text;
+	DECLARE winner_name VARCHAR(256);
+	
+	BEGIN
+		PERFORM tie_breaker(driver_username, s_time, e_time, s_date, e_date, license_plate) from (
+			SELECT driver_username, s_time, e_time, s_date, e_date, license_plate, count(is_win) AS counter from bids
+			WHERE is_win = 'false' 
+			group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+		) AS A1
+		WHERE A1.counter >=3;
+		RETURN NEW; -- allow
+	END;
+$TAG2$  LANGUAGE 'plpgsql';
+CREATE TRIGGER check_ties
+BEFORE INSERT ON bids 
+FOR EACH ROW 
+EXECUTE PROCEDURE system_selection();
