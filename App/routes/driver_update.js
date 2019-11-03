@@ -72,7 +72,14 @@ router.post('/adding_vehicle', (req, res, next) => {
 			console.error(err);
 		} 
         else{
-            res.redirect('../dashboard');
+			pool.query(sql_query.query.add_to_drives,[req.signedCookies.user_id, license_plate] ,(err2, data2) => {
+				if(err2) {
+					console.error(err2);
+				} 
+				else{
+					res.redirect('../dashboard');
+				}
+			});
         }
 	});
 });

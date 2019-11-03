@@ -11,16 +11,16 @@ const pool = new Pool({
 router.get('/', function (req, res, next) {
 	var location = req.query.location;
 	if (location == null) {
-		pool.query(sql_query.query.all_advertised_trips, (err, data) => {
+		pool.query(sql_query.query.all_advertised_trips,[req.signedCookies.user_id], (err, data) => {
 			if (err) {
 				console.error("Error getting info");
 			} else {
-				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 'f'], (err2, data2) => {
+				pool.query(sql_query.query.display_bids, [req.signedCookies.user_id], (err2, data2) => {
 					if (err2) {
 						console.error("Error getting info:2");
 					}
 					else {
-						pool.query(sql_query.query.display_bids, [req.signedCookies.user_id, 't'], (err3, data3) => {
+						pool.query(sql_query.query.display_bids_completed, [req.signedCookies.user_id], (err3, data3) => {
 							if (err3) {
 								console.error("Error getting info:3");
 							} else {
