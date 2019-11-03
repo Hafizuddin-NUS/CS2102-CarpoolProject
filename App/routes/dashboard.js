@@ -51,34 +51,25 @@ router.get('/', function (req, res, next) {
 
 router.post('/delete_users', (req, res, next) => {
 	var username = req.signedCookies.user_id;
-	pool.connect( function(err, client) {
-		if(err) {
-		  console.log(err);
-		  reject(err);
+	pool.query(sql_query.query.delete_users, [username], function (err, data2) {
+		if (err) {
+			//console.error(err);
+			next(new Error(err));
 		}
-		pool.query(sql_query.query.delete_users, [username], function (err2, data2) {
-			if (err2) {
-				//console.error(err);
-				next(new Error(err2));
-			}	
-			else if(data2.rowCount== 0) {
-				client.on('notification', function(msg) {
-					//console.log(msg);	//trigger message will be inside this JSON.	
-					res.json({	
-						message: 'Unable to delete user',
-						trggier_msg: msg
-					});
-				});
-			}
-			else{
+		else if(data2.rowCount== 0) {
+			doA().then(function(msg_from_database) {
 				res.json({	
-					message: 'Successfully deleted user',
-					rows_deleted: data2.rowCount
+					message: 'Unable to delete user',
+					trggier_msg: msg_from_database
 				});
-			}
-		});
-		// Designate which channels we are listening on. Add additional channels with multiple lines.
-		client.query('LISTEN trigger_error_channel');	//Listen to this channel called 'trigger_error_channel'.
+			});
+		}
+		else{
+			res.json({	
+				message: 'Successfully deleted user',
+				rows_deleted: data2.rowCount
+			});
+		}
 	});
 });
 
@@ -108,5 +99,3 @@ function doA() {
 
 
 module.exports = router;
-
-
