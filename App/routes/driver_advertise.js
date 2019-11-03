@@ -112,16 +112,22 @@ router.get('/', function(req, res, next) {
             }); 
 		}
 		else if (data.rows.length >= 0) {
-			pool.query(sql_query.query.get_location, (err, data2) => {
-				if(err){
-					console.error(err);
+			pool.query(sql_query.query.get_location, (err2, data2) => {
+				if(err2){
+					console.error(err2);
 				}
 				else if (data2.rows.length >= 0){
-					pool.query(sql_query.query.display_driver_bids, [driver_username], (err, data3) => {
-						if(err){
-							console.error(err);
+					pool.query(sql_query.query.display_driver_bids, [driver_username], (err3, data3) => {
+						if(err3){
+							console.error(err3);
 						} else{	
-							res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, data3: data3.rows, isLoggedin: req.signedCookies.user_id });
+							pool.query(sql_query.query.get_license_plate_of_driver, [driver_username], (err4, data4) => {
+								if(err4){
+									console.error(err4);
+								} else{	
+									res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, data3: data3.rows, data4: data4.rows, isLoggedin: req.signedCookies.user_id });
+								}
+							});
 						}
 					});
 				}

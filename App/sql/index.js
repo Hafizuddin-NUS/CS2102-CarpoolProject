@@ -10,6 +10,7 @@ sql.query = {
     get_model: "SELECT * FROM category WHERE type=$1",
     get_location: "SELECT location FROM location_dist",
     add_driver: "INSERT INTO drivers VALUES($1) ",
+    get_license_plate_of_driver: "SELECT license_plate FROM drives WHERE driver_username=$1",
     get_user_info: "SELECT * , get_membership(A.username) FROM users A WHERE username = $1",
     get_membership: "SELECT get_membership($1)",
     get_dist: "SELECT ABS(A.metrics - B.metrics) AS dist FROM location_dist A, location_dist B WHERE A.location=$1 AND B.location=$2",

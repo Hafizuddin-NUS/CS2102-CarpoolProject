@@ -10,7 +10,7 @@ $(() => {
 
         const s_location =location1();
         const e_location =location2();
-        const license_plate = $('#license_plate').val();
+        const license_plate = license_plate1();
         const s_date =$('#s_date').val();
         const e_date =$('#e_date').val();
         const s_time =$('#s_time').val();
@@ -145,6 +145,15 @@ function location2()
 {
   //alert($('#id').val());
   var displaytext = $('#id2').val();
+  //alert(displaytext);
+  return displaytext;
+
+}
+
+function license_plate1()
+{
+  //alert($('#id').val());
+  var displaytext = $('#id3').val();
   //alert(displaytext);
   return displaytext;
 
