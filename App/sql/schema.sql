@@ -417,7 +417,7 @@ AS $TAG2$
 	END;
 $TAG2$  LANGUAGE 'plpgsql';
 CREATE TRIGGER check_ties
-BEFORE INSERT ON bids 
+AFTER INSERT ON bids 
 FOR EACH ROW 
 EXECUTE PROCEDURE system_selection();
 
