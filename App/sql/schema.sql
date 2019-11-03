@@ -152,11 +152,12 @@ CREATE TABLE  surge (
 	--surge_rate: More than 0
 	Constraint check_surge_rate CHECK (surge_rate > 0)
 );
-INSERT INTO surge VALUES ('Morning Peak', '1.5'); 
+INSERT INTO surge VALUES ('Morning Peak', '2'); 
 INSERT INTO surge VALUES ('Morning', '1'); 
-INSERT INTO surge VALUES ('Afternoon', '2'); 
-INSERT INTO surge VALUES ('Evening', '3.5'); 
-INSERT INTO surge VALUES ('Night', '4'); 
+INSERT INTO surge VALUES ('Afternoon', '1'); 
+INSERT INTO surge VALUES ('Evening', '1.5
+'); 
+INSERT INTO surge VALUES ('Night', '2.5'); 
 SELECT * FROM SURGE;
 
 CREATE TABLE  membership (
@@ -293,12 +294,41 @@ $TAG1$  LANGUAGE 'plpgsql';
 select get_price(1);
 
 
+CREATE OR REPLACE FUNCTION get_membership(name TEXT)
+RETURNS TEXT
+AS $TAG1$
+	DECLARE gold_count numeric;
+	DECLARE silver_count numeric;
+	DECLARE bronze_count numeric;
+	DECLARE green_count numeric;
+	
+	DECLARE passenger_count numeric;
+	
+	BEGIN
+		SELECT trips_required INTO gold_count FROM membership WHERE category = 'gold';
+		SELECT trips_required INTO silver_count FROM membership WHERE category = 'silver';
+		SELECT trips_required INTO bronze_count FROM membership WHERE category = 'bronze';
+		SELECT trips_required INTO green_count FROM membership WHERE category = 'green';
+		
+		
+		select count(is_completed) INTO passenger_count from bids 
+		where is_completed = true and passenger_username = name
+		group by passenger_username;
+		
+		IF(passenger_count >= gold_count) THEN
+			return 'gold';
+		ELSEIF(passenger_count >= silver_count) THEN
+			return 'silver';
+		ELSEIF(passenger_count >= bronze_count) THEN
+			return 'bronze';
+		ELSE
+			return 'green';
+		END IF;
+	END;
+$TAG1$  LANGUAGE 'plpgsql';
+select get_membership('zhihong8888');
 
-
-
---------------------------------------------------------------------------------------------------------------------
 --Trigger 1
-
 CREATE OR REPLACE FUNCTION driver_has_advertised_bid()
 RETURNS TRIGGER AS $TAG2$
 	DECLARE count NUMERIC;
@@ -313,22 +343,19 @@ RETURNS TRIGGER AS $TAG2$
 		
 		IF count > 0 THEN	
 			RAISE NOTICE 'Bids Trigger 1: Cannot delete driver that has advertised trips';
+			PERFORM pg_notify('trigger_error_channel', 'trigger1');
 			RETURN NULL; -- prevent
 		ELSE
 			RETURN OLD; -- allow
 		END IF;
 	END;
 $TAG2$ LANGUAGE plpgsql;
-
 CREATE TRIGGER check_driver_has_advertised_trips_delete_user
 BEFORE DELETE ON users 
 FOR EACH ROW 
 EXECUTE PROCEDURE driver_has_advertised_bid();
-----------------------------------
---Test trigger 1--
+--Test trigger 1
 --delete from users where username = 'hafiz';
-
-----------------------------------
 /*
 select * from bids where
 driver_username = 'hafiz' 
@@ -337,12 +364,12 @@ AND is_win = 'false'
 AND s_date > now()
 AND s_time > to_timestamp(to_char(now(),'HH:MM:SS'),'HH:MM:SS')::time;
 */
---------------------------------------------------------------------------------------------------------------------
---Trigger 2
 
+--Trigger 2
 CREATE OR REPLACE FUNCTION unable_delete_driver_with_bid_won_uncompleted_trips()
 RETURNS TRIGGER AS $TAG3$
 	DECLARE count NUMERIC;
+	DECLARE myNotice TEXT := 'Bids Trigger 2: Cannont delete driver when there is advertised trip with bid won, but ride is uncompleted';
 	BEGIN
 		SELECT COUNT(*) INTO count FROM bids b
 		WHERE OLD.username = B.driver_username
@@ -352,31 +379,27 @@ RETURNS TRIGGER AS $TAG3$
 		
 		IF count > 0 THEN	
 			RAISE NOTICE 'Bids Trigger 2: Cannont delete driver when there is advertised trip with bid won, but ride is uncompleted';
+			PERFORM pg_notify('trigger_error_channel', myNotice);
 			RETURN NULL; -- prevent
 		ELSE
 			RETURN OLD; -- allow
 		END IF;
 	END;
 $TAG3$ LANGUAGE plpgsql;
-
 CREATE TRIGGER check_driver_has_advertised_trip_with_bid_won_uncompleted_trips
 BEFORE DELETE ON users 
 FOR EACH ROW 
 EXECUTE PROCEDURE unable_delete_driver_with_bid_won_uncompleted_trips();
-----------------------------------
---Test trigger 2--
+--Test trigger 2
 --delete from users where username = 'hafiz';
-
-----------------------------------
 /*
 select * from bids where
 driver_username = 'hafiz' 
 AND is_completed = 'false' 
 AND is_win = 'true';
 */
---------------------------------------------------------------------------------------------------------------------
---Trigger 3
 
+--Trigger 3
 CREATE OR REPLACE FUNCTION unable_delete_passenger_with_bid_won_uncompleted_trips()
 RETURNS TRIGGER AS $TAG4$
 	DECLARE count NUMERIC;
@@ -395,23 +418,19 @@ RETURNS TRIGGER AS $TAG4$
 		END IF;
 	END;
 $TAG4$ LANGUAGE plpgsql;
-
 CREATE TRIGGER check_passenger_has_trip_with_bid_won_uncompleted_trips
 BEFORE DELETE ON users 
 FOR EACH ROW 
 EXECUTE PROCEDURE unable_delete_passenger_with_bid_won_uncompleted_trips();
-----------------------------------
---Test trigger 3--
+--Test trigger 3
 --delete from users where username = 'gervaise';
-
-----------------------------------
 /*
 select * from bids where
 passenger_username = 'gervaise' 
 AND is_completed = 'false' 
 AND is_win = 'true';
 */
---------------------------------------------------------------------------------------------------------------------
+
 --Trigger 4
 CREATE OR REPLACE FUNCTION trigger_set_timestamp()
 RETURNS TRIGGER AS $TAG5$
@@ -426,7 +445,6 @@ CREATE TRIGGER set_timestamp
 BEFORE INSERT or UPDATE ON bids
 FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
---------------------------------------------------------------------------------------------------------------------
 
 
 INSERT INTO advertised_trips VALUES('vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
