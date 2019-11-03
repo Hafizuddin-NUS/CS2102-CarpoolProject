@@ -382,7 +382,7 @@ AS $func3$
 			bid_time
 		LIMIT 1;
 
-		UPDATE bids SET is_win='t' WHERE bids.driver_username = driver
+		UPDATE bids SET is_win='t', mode_of_acceptance='System' WHERE bids.driver_username = driver
 				AND bids.s_time = st_time
 				AND bids.e_time = en_time
 				AND bids.s_date = st_date
@@ -531,7 +531,7 @@ INSERT INTO advertised_trips VALUES('hafiz', 'NUS', 'Boon Lay', '13:00', '14:22'
 INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2');
 INSERT INTO advertised_trips VALUES('hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
 INSERT INTO advertised_trips VALUES('hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3');
-SELECT * FROM advertised_trips;
+--SELECT * FROM advertised_trips;
 
 INSERT INTO bids VALUES('30', 'hafiz', 'vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
 INSERT INTO bids VALUES('10', 'hafiz', 'vernon', 'NUS', 'Bedok', '13:00', '14:22', '20/9/2019', '20/9/2019', 'S9876542E', '2.9', '1.3');
@@ -578,18 +578,10 @@ INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_
 INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist) VALUES('10', 'gervaise', 'hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
 INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed) VALUES('10', 'gervaise', 'hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3', 'true', 'System', 'false');
 
-SELECT * FROM BIDS;
+--SELECT * FROM BIDS;
 
 
---test system selection()
-select * from (
-	SELECT driver_username, s_time, e_time, s_date, e_date, license_plate, count(is_win) AS counter from bids
-	WHERE is_win = 'false' 
-	group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
-) AS A1
-WHERE A1.counter >=3;
 
-DROP FUNCTION IF EXISTS system_selection CASCADE;
 CREATE OR REPLACE FUNCTION system_selection()
 RETURNS TRIGGER 
 AS $TAG2$
@@ -612,3 +604,22 @@ CREATE TRIGGER check_ties
 BEFORE INSERT ON bids 
 FOR EACH ROW 
 EXECUTE PROCEDURE system_selection();
+
+
+--test system selection()
+/*
+select * from (
+	SELECT driver_username, s_time, e_time, s_date, e_date, license_plate, count(is_win) AS counter from bids
+	WHERE is_win = 'false' 
+	group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+) AS A1
+WHERE A1.counter >=3;
+
+select * from bids where is_completed = false and is_win = true;
+
+--user1, password
+INSERT INTO users VALUES ('user1', '$2a$10$tpJ3Awz2WBRaDjpC4z4s9O3nwZ78/4Ne3WnmBhzuQ7RBo9doaR7TG', 'F', '44444444','ger1234@gmail.com', 'HungerTrack'); 
+INSERT INTO passengers VALUES ('user1'); 
+INSERT INTO bids VALUES('30', 'user1','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
+
+*/
