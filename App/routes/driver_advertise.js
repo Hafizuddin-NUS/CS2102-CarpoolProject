@@ -125,7 +125,19 @@ router.get('/', function(req, res, next) {
 								if(err4){
 									console.error(err4);
 								} else{	
-									res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, data3: data3.rows, data4: data4.rows, isLoggedin: req.signedCookies.user_id });
+									pool.query(sql_query.query.confirmed_bids, [driver_username], (err5, data5) => {
+										if(err5){
+											console.error(err5);
+										} else{	
+											pool.query(sql_query.query.driver_completed_trips, [driver_username], (err6, data6) => {
+												if(err5){
+													console.error(err6);
+												} else{	
+													res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, data3: data3.rows, data4: data4.rows, data5: data5.rows, data6: data6.rows, isLoggedin: req.signedCookies.user_id });
+												}
+											});
+										}
+									});
 								}
 							});
 						}
