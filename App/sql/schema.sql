@@ -146,7 +146,6 @@ INSERT INTO drives VALUES ('vernon','S1234567J');
 INSERT INTO drives VALUES ('vernon','S9876542E'); 
 SELECT * FROM drives;
 
-
 CREATE TABLE  surge (
 	time VARCHAR(256) NOT NULL UNIQUE,
 	surge_rate numeric NOT NULL,
@@ -267,7 +266,7 @@ CREATE TABLE bids (
 	Constraint check_mode_of_acceptance CHECK (mode_of_acceptance = 'Driver Selected' OR mode_of_acceptance = 'System'),
 	
 	--More than 0
-	Constraint check_bid_price CHECK (bid_price > 0),
+	Constraint check_bid_price CHECK (bid_price > 0 AND bid_price >= min_bid),
 	
 	--Driver cannot bid himself
 	Constraint check_driver_username CHECK (driver_username != passenger_username),
@@ -397,32 +396,6 @@ AS $func3$
 $func3$  LANGUAGE 'plpgsql';
 
 
---trigger 5
-CREATE OR REPLACE FUNCTION system_selection()
-RETURNS TRIGGER 
-AS $TAG2$
-	DECLARE max_bid numeric;
-	DECLARE earliest_time TIMESTAMP;
-	DECLARE max_category text;
-	DECLARE winner_name VARCHAR(256);
-	
-	BEGIN
-		PERFORM tie_breaker(driver_username, s_time, e_time, s_date, e_date, license_plate) from (
-			SELECT driver_username, s_time, e_time, s_date, e_date, license_plate, count(is_win) AS counter from bids
-			WHERE is_win = 'false' 
-			group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
-		) AS A1
-		WHERE A1.counter >=3;
-		RETURN NEW; -- allow
-	END;
-$TAG2$  LANGUAGE 'plpgsql';
-CREATE TRIGGER check_ties
-AFTER INSERT ON bids 
-FOR EACH ROW 
-EXECUTE PROCEDURE system_selection();
-
-
-
 --Trigger 1
 CREATE OR REPLACE FUNCTION driver_has_advertised_bid()
 RETURNS TRIGGER AS $TAG2$
@@ -438,7 +411,7 @@ RETURNS TRIGGER AS $TAG2$
 		
 		IF count > 0 THEN	
 			RAISE NOTICE 'Bids Trigger 1: Cannot delete driver that has advertised trips';
-			PERFORM pg_notify('trigger_error_channel', 'trigger1');
+			PERFORM pg_notify('trigger_error_channel', 'Bids Trigger 1: Cannot delete driver that has advertised trips');
 			RETURN NULL; -- prevent
 		ELSE
 			RETURN OLD; -- allow
@@ -542,6 +515,80 @@ FOR EACH ROW
 EXECUTE PROCEDURE trigger_set_timestamp();
 
 
+
+--trigger 5
+CREATE OR REPLACE FUNCTION system_selection()
+RETURNS TRIGGER 
+AS $TAG2$
+	DECLARE max_bid numeric;
+	DECLARE earliest_time TIMESTAMP;
+	DECLARE max_category text;
+	DECLARE winner_name VARCHAR(256);
+	
+	BEGIN
+		PERFORM tie_breaker(driver_username, s_time, e_time, s_date, e_date, license_plate) from (
+			SELECT driver_username, s_time, e_time, s_date, e_date, license_plate, count(is_win) AS counter from bids
+			WHERE is_win = 'false' 
+			group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+		) AS A1
+		WHERE A1.counter >=3;
+		RETURN NEW; -- allow
+	END;
+$TAG2$  LANGUAGE 'plpgsql';
+CREATE TRIGGER check_ties
+AFTER INSERT ON bids 
+FOR EACH ROW 
+EXECUTE PROCEDURE system_selection();
+
+--trigger 6: Don't allow driver to delete car that has advertised trips with uncompleted rides, either ongoing bids that has no winner yet or has a winner but uncompleted ride.
+CREATE OR REPLACE FUNCTION driver_car_delete()
+RETURNS TRIGGER AS $TAG2$
+	DECLARE count NUMERIC;
+	BEGIN
+	
+		SELECT COUNT(*) INTO count from (
+			select driver_username, s_time, e_time, s_date, e_date, license_plate from bids 
+			where is_win = 'false'
+			group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+
+			EXCEPT
+
+			select driver_username, s_time, e_time, s_date, e_date, license_plate from bids 
+			where is_completed = 'true'
+			group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+		) AS A
+		where A.license_plate = OLD.license_plate
+		AND A.driver_username = OLD.driver_username;
+		
+		IF count > 0 THEN	
+			RAISE NOTICE 'Bids Trigger 6: Cannot delete car that has advertised trips uncompleted';
+			PERFORM pg_notify('trigger_error_channel', 'Bids Trigger 6: Cannot delete car that has advertised trips with uncompleted rides');
+			RETURN NULL; -- prevent
+		ELSE
+			RETURN OLD; -- allow
+		END IF;
+	END;
+$TAG2$ LANGUAGE plpgsql;
+CREATE TRIGGER check_driver_has_advertised_trips_delete_car
+BEFORE DELETE ON drives 
+FOR EACH ROW 
+EXECUTE PROCEDURE driver_car_delete();
+--Test trigger 4
+/*
+Select * from (
+	select driver_username, s_time, e_time, s_date, e_date, license_plate from bids 
+	where is_win = 'false'
+	group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+
+	EXCEPT
+
+	select driver_username, s_time, e_time, s_date, e_date, license_plate from bids 
+	where is_completed = 'true'
+	group by (driver_username, s_time, e_time, s_date, e_date, license_plate)
+) AS A
+*/
+
+
 INSERT INTO advertised_trips VALUES('vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
 INSERT INTO advertised_trips VALUES('vernon', 'NUS', 'Bedok', '13:00', '14:22', '20/9/2019', '20/9/2019', 'S9876542E', '2.9', '1.3');
 INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '21/9/2019', '21/9/2019', 'S1234567J', '3.5', '1.2');
@@ -594,7 +641,7 @@ INSERT INTO bids VALUES('30', 'zhihong8888','vernon', 'Expo', 'NUS', '13:22', '1
 INSERT INTO bids VALUES('30', 'zhihong8888','vernon', 'NUS', 'Bedok', '13:00', '14:22', '24/9/2019', '24/9/2019', 'S9876542E', '2.9', '1.3', 'true', 'System', 'true', '4');
 INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '25/9/2019', '25/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
 INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '26/9/2019', '26/9/2019', 'S1234567J', '2.9', '1.3', 'true', 'System', 'true', '4');
-INSERT INTO bids VALUES('30', 'hafiz','vernon', 'Expo', 'NUS', '13:22', '14:22', '27/9/2019', '27/9/2019', 'S9876542E', '3.5', '1.2', 'true', 'System', 'true', '3');
+INSERT INTO bids VALUES('30', 'hafiz','vernon', 'Expo', 'NUS', '13:22', '14:22', '27/9/2019', '27/9/2019', 'S9876542E', '3.5', '1.2');
 INSERT INTO bids VALUES('30', 'hafiz','vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3');
 INSERT INTO bids VALUES('30', 'vernon','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2');
 INSERT INTO bids VALUES('30', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
