@@ -129,9 +129,9 @@
 								<div class="card-footer small text-muted"><input id = "btnGet2" button type="submit" class="btn btn-secondary" value="Delete Selected"></button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
 							</div>
 							<div class="card mb-3">
-									<div class="card-header">
-										<i class="fas fa-address-card"></i> &nbsp; Current Bids
-									</div>
+								<div class="card-header">
+									<i class="fas fa-address-card"></i> &nbsp; Current Bids
+								</div>
 									<form action="/driver_advertise" class="form-control" method="GET">
 										<div class="input-group">
 											<input type="text" id="search" class="form-control" placeholder="s_location:e_location:s_date" aria-label="Search" aria-describedby="basic-addon2"
@@ -179,9 +179,89 @@
 											</table>
 											<br />
 										</div>
-									</div>
-									<div class="card-footer small text-muted"><input id = "btnGet3" button type="submit" class="btn btn-secondary" value="Accept Bid"></button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
 								</div>
+								<div class="card-footer small text-muted"><input id = "btnGet3" button type="submit" class="btn btn-secondary" value="Accept Bid"></button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
+							</div>
+							<div class="card mb-3">
+								<div class="card-header">
+									<i class="fas fa-address-card"></i> &nbsp; Confirmed Trips
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+											<thead>
+												<tr>
+													<th>Passenger Name</th>
+													<th>Start Date</th>
+													<th>End Date</th>
+													<th>Start Time</th>
+													<th>End Time</th>
+													<th>Start Location</th>
+													<th>End Location</th>
+													<th>Vehicle</th>
+													<th>Bid_price</th>
+												</tr>
+											</thead>
+											<tbody>
+												<% for(var i=0; i<data5.length; i++) { %>
+												<tr>
+													<td><%= data5[i].passenger_username%></td>
+													<td><%= data5[i].s_date%></td>
+													<td><%= data5[i].e_date%></td>
+													<td><%= data5[i].s_time%></td>
+													<td><%= data5[i].e_time%></td>
+													<td><%= data5[i].s_location%></td>
+													<td><%= data5[i].e_location%></td>
+													<td><%= data5[i].license_plate%></td>
+													<td><%= data5[i].bid_price%></td>
+												</tr>
+												<% } %>
+											</tbody>
+										</table>
+										<br />
+									</div>
+								</div>
+							</div>
+							<div class="card mb-3">
+								<div class="card-header">
+									<i class="fas fa-address-card"></i> &nbsp; Completed Trips
+								</div>
+								<div class="card-body">
+									<div class="table-responsive">
+										<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+											<thead>
+												<tr>
+													<th>Passenger Name</th>
+													<th>Start Date</th>
+													<th>End Date</th>
+													<th>Start Time</th>
+													<th>End Time</th>
+													<th>Start Location</th>
+													<th>End Location</th>
+													<th>Vehicle</th>
+													<th>Bid_price</th>
+												</tr>
+											</thead>
+											<tbody>
+												<% for(var i=0; i<data6.length; i++) { %>
+												<tr>
+													<td><%= data6[i].passenger_username%></td>
+													<td><%= data6[i].s_date%></td>
+													<td><%= data6[i].e_date%></td>
+													<td><%= data6[i].s_time%></td>
+													<td><%= data6[i].e_time%></td>
+													<td><%= data6[i].s_location%></td>
+													<td><%= data6[i].e_location%></td>
+													<td><%= data6[i].license_plate%></td>
+													<td><%= data6[i].bid_price%></td>
+												</tr>
+												<% } %>
+											</tbody>
+										</table>
+										<br />
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>	
         	</div>
