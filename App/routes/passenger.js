@@ -33,7 +33,11 @@ router.get('/', function (req, res, next) {
 		});
 	}
 	else {
-		pool.query(sql_query.query.filter_advertised_trips, [req.signedCookies.user_id,location], (err, data) => {
+		var search_parsed = location.split(":");
+		var s_location = search_parsed[0];
+		var e_location = search_parsed[1];
+		var s_date = search_parsed[2];
+		pool.query(sql_query.query.filter_advertised_trips, [req.signedCookies.user_id,s_location,e_location,s_date], (err, data) => {
 			if (err) {
 				console.error("Error getting info");
 			} else {
