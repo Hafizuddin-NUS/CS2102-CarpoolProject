@@ -24,7 +24,10 @@ DROP TRIGGER IF EXISTS check_driver_has_advertised_trip_with_bid_won_uncompleted
 DROP FUNCTION IF EXISTS unable_delete_driver_with_bid_won_uncompleted_trips CASCADE;
 DROP TRIGGER IF EXISTS check_passenger_has_trip_with_bid_won_uncompleted_trips ON users;
 DROP FUNCTION IF EXISTS unable_delete_passenger_with_bid_won_uncompleted_trips CASCADE;
-
+DROP TRIGGER IF EXISTS check_ties ON bids;
+DROP FUNCTION IF EXISTS system_selection CASCADE;
+DROP TRIGGER IF EXISTS check_driver_has_advertised_trips_delete_car ON drives;
+DROP FUNCTION IF EXISTS driver_car_delete CASCADE;
 
 --SET datestyle = dmy;
 ALTER DATABASE "Carpooling" SET datestyle TO "ISO, DMY";
