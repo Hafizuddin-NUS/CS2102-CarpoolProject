@@ -5,7 +5,7 @@ $(() => {
         });
     });
 
-    $('form').submit((event) => {
+    $('#form1').submit((event) => {
         event.preventDefault();
 
         const s_location =location1();
