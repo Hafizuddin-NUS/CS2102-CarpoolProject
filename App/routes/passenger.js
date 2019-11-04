@@ -33,7 +33,7 @@ router.get('/', function (req, res, next) {
 		});
 	}
 	else {
-		pool.query(sql_query.query.filter_advertised_trips, [location], (err, data) => {
+		pool.query(sql_query.query.filter_advertised_trips, [req.signedCookies.user_id,location], (err, data) => {
 			if (err) {
 				console.error("Error getting info");
 			} else {
