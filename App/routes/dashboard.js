@@ -8,12 +8,8 @@ const pool = new Pool({
 });
 
 
-/* SQL Query */
-var sql_query2 = 'SELECT * FROM users WHERE username =';
-
 router.get('/', function (req, res, next) {
-	var get_user_info = sql_query2 + "'" + req.signedCookies.user_id + "'";
-	pool.query(get_user_info, (err, data) => {
+	pool.query(sql_query.query.get_user_info, [req.signedCookies.user_id], (err, data) => {
 		if (err) {
 			res.json({
 				message: 'ERROR'
@@ -27,28 +23,53 @@ router.get('/', function (req, res, next) {
 					});
 				}
 				if (data2.rows.length == 1){
-					pool.query(sql_query.query.driver_rating,[req.signedCookies.user_id], (err3,data3) =>{
-						if(err3){
+					pool.query(sql_query.query.get_seats_offered,[req.signedCookies.user_id], (err4,data4) =>{
+						if(err4){
 							res.json({
-								message : 'ERROR3'
+								message: 'ERROR4'
+							});	
+						}
+						else {
+							pool.query(sql_query.query.driver_rating,[req.signedCookies.user_id], (err3,data3) =>{
+								if(err3){
+									res.json({
+										message : 'ERROR3'
+									});
+								}
+								if(data3.rows.length == 1){
+										res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: data3.rows[0].driver_rating, data4: data4.rows, isLoggedin: req.signedCookies.user_id, status: "Registered" });
+									}
+								else {
+									data3.rows[0] = { driver_username: req.signedCookies.user_id , driver_rating: "No Rating" };
+									res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: data3.rows[0].driver_rating, data4: data4.rows, isLoggedin: req.signedCookies.user_id, status: "Registered" });
+								}
 							});
 						}
-						if(data3.rows.length == 1){
-								res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: data3.rows[0].driver_rating, isLoggedin: req.signedCookies.user_id, status: "Registered" });
-							}
-						else {
-							data3.rows[0] = { driver_username: req.signedCookies.user_id , driver_rating: "No Rating" };
-							res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: data3.rows[0].driver_rating, isLoggedin: req.signedCookies.user_id, status: "Registered" });
-						}
-						});
-					}
+					});
+				}
 				else{
-					res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: "No Rating", isLoggedin: req.signedCookies.user_id, status: "Not Registered" });
+					data5 = {license_plate: null, seats_offered : null};
+					res.render('dashboard', { title: req.signedCookies.user_id , data: data.rows, data3: "No Rating",data4: data5, isLoggedin: req.signedCookies.user_id, status: "Not Registered" });
 				}
 			});
 		}
 		else {
 			next(new Error('Error more than 2 entries found.'));
+		}
+	});
+});
+
+router.post('/delete_car', (req, res, next) => {
+	var username = req.signedCookies.user_id;
+	var license_plate = req.body.license_plate.trim();
+	pool.query(sql_query.query.delete_car, [username,license_plate], function (err, data2) {
+		if (err) {
+			console.error(err);
+			next(new Error(err));
+		}
+		else{
+			console.log(license_plate);
+			res.redirect('./');
 		}
 	});
 });

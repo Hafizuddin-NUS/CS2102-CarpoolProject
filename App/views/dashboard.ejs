@@ -34,7 +34,7 @@
 					<div class="container-fluid">
 						<div class="card mb-3">
 							<div class="card-header">
-								<i class="fas fa-address-card"></i> &nbsp; Basic Information
+								<i class="fas fa-address-card"></i> &nbsp; Basic user information
 							</div>
 							<form id="form1" method="post" action="./init/update_info">
 								<div class="card-body">
@@ -55,7 +55,7 @@
 										</div>
                     					<label for="Membership" class="col-sm-2 col-form-label"><b>Membership:</b></label>
 										<div class="col-sm-4">
-											<input type="text" required="required" readonly class="form-control-plaintext" id="membership" value="<%= data[0].gender %>"  name="gender">
+											<input type="text" required="required" readonly class="form-control-plaintext" id="membership" value="<%= data[0].get_membership %>"  name="gender">
 										</div>
 									</div>
 									<div class="form-group row">
@@ -77,14 +77,14 @@
 									</div>
 								</div>
 								<div class="card-footer small text-muted">
-									<button type="submit" class="btn btn-secondary">Update Info</button> &nbsp;&nbsp;&nbsp;
+									<button type="submit" class="btn btn-secondary">Update Information</button> &nbsp;&nbsp;&nbsp;
 									<span class="badge badge-pill badge-info"></span>
 								</div>
 							</form>
 						</div>
 						<div class="card mb-3">
 							<div class="card-header">
-								<i class="fas fa-address-card"></i> &nbsp; Driver Registration
+								<i class="fas fa-address-card"></i> &nbsp; Driver profile
 							</div>
 							<form id="form2" method="get" action="/driver_update">
 								<div class="card-body">
@@ -105,8 +105,40 @@
 											</div>
 										</div>
 								</div>
-								<div class="card-footer small text-muted"><button type="submit" class="btn btn-secondary">Register/Update driver infomation</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
+								<div class="card-footer small text-muted"><button type="submit" class="btn btn-secondary">Register/Add new vehicle</button> &nbsp;&nbsp;&nbsp; <span class="badge badge-pill badge-info"></span></div>
 							</form>
+							<br>
+							<div class="card-header">
+								<i class="fas fa-address-card"></i> &nbsp; Registered vehicles list
+							</div>
+							<table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+								<thead>
+									<tr>
+										<th>&nbsp;</th>
+										<th>License Plate</th>
+										<th>Seat Offered</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% for(var i=0; i<data4.length; i++) { %>
+										<tr>
+											<td>
+												<input type="checkbox" class="check" />
+											</td>
+											<td>
+												<%= data4[i].license_plate%>
+											</td>
+											<td>
+												<%= data4[i].seats_offered%>
+											</td>
+
+										</tr>
+									<% } %>
+								</tbody>
+							</table>
+							<div class="card-footer small text-muted">
+                                <input id="btnGet" class="btn btn-secondary" type="button" value="Delete Selected" />
+                            </div>
 						</div>
 
 						<input id="btnDeleteUser" class="btn btn-secondary" color="red" type="button" value="Delete user" />
