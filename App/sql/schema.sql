@@ -116,6 +116,8 @@ CREATE TABLE  category (
 	Constraint check_seats CHECK (seats_offered > 0)
 	
 );
+INSERT INTO category VALUES ('Honda', 'Minibus', '6'); 
+INSERT INTO category VALUES ('Mercedes', 'Car', '4');
 INSERT INTO category VALUES('Audi', 'Car', '4');
 INSERT INTO category VALUES('Nissan', 'Car', '4');
 INSERT INTO category VALUES('Toyota', 'Car', '4');
