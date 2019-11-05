@@ -118,6 +118,12 @@ CREATE TABLE  category (
 );
 INSERT INTO category VALUES ('Honda', 'Minibus', '6'); 
 INSERT INTO category VALUES ('Mercedes', 'Car', '4');
+INSERT INTO category VALUES('Audi', 'Car', '4');
+INSERT INTO category VALUES('Nissan', 'Car', '4');
+INSERT INTO category VALUES('Toyota', 'Car', '4');
+INSERT INTO category VALUES('BMW', 'Car', '4');
+INSERT INTO category VALUES('Volvo', 'Car', '4');
+INSERT INTO category VALUES('Mazda', 'Minibus', '6');
 SELECT * FROM CATEGORY;
 
 
@@ -592,62 +598,66 @@ Select * from (
 */
 
 
-INSERT INTO advertised_trips VALUES('vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO advertised_trips VALUES('vernon', 'NUS', 'Bedok', '13:00', '14:22', '20/9/2019', '20/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '21/9/2019', '21/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO advertised_trips VALUES('hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '22/9/2019', '22/9/2019', 'S1234567J', '2.9', '1.3');
-INSERT INTO advertised_trips VALUES('vernon', 'Expo', 'NUS', '13:22', '14:22', '23/9/2019', '23/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO advertised_trips VALUES('vernon', 'NUS', 'Bedok', '13:00', '14:22', '24/9/2019', '24/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '25/9/2019', '25/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO advertised_trips VALUES('hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '26/9/2019', '26/9/2019', 'S1234567J', '2.9', '1.3');
-INSERT INTO advertised_trips VALUES('vernon', 'Expo', 'NUS', '13:22', '14:22', '27/9/2019', '27/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO advertised_trips VALUES('vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO advertised_trips VALUES('hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
-
-INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2');
-INSERT INTO advertised_trips VALUES('hafiz', 'Jurong', 'Expo', '13:00', '14:22', '18/9/2020', '18/9/2020', 'S1234567J', '2.9', '1.3');
-INSERT INTO advertised_trips VALUES('hafiz', 'Bedok', 'Expo', '12:00', '13:22', '18/10/2020', '18/10/2020', 'S1234567J', '3.9', '2.3');
+INSERT INTO advertised_trips VALUES('vernon', 'NUS', 'Expo', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S9876542E', '32.0', '6.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'NUS', 'Pasir Ris', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S1234567J', '42.0', '8.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'NUS', 'Boon Lay', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S1234567J', '22.0', '4.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'NUS', 'Boon Lay', '23:00', '23:45', '5/11/2019', '5/11/2019', 'S1234567J', '27.5', '4.0');
+INSERT INTO advertised_trips VALUES('vernon', 'Expo', 'NUS', '06:45', '07:30', '12/11/2019', '12/11/2019', 'S9876542E', '40.0', '6.0');
+INSERT INTO advertised_trips VALUES('vernon', 'Expo', 'NUS', '15:00', '15:35', '12/11/2019', '12/11/2019', 'S9876542E', '16.0', '6.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'Pasir Ris', 'NUS', '18:00', '18:45', '12/11/2019', '12/11/2019', 'S1234567J', '31.5', '8.0');
+INSERT INTO advertised_trips VALUES('vernon', 'NUS', 'Bedok', '09:45', '10:25', '12/11/2019', '12/11/2019', 'S1234567J', '22.0', '4.0');
+INSERT INTO advertised_trips VALUES('vernon', 'NUS', 'Bedok', '23:00', '23:45', '12/11/2019', '12/11/2019', 'S9876542E', '27.50', '4.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'NUS', 'City Hall', '09:45', '10:25', '12/11/2019', '12/11/2019', 'S1234567J', '12.0', '2.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'City Hall', 'Bedok', '17:00', '17:30', '12/11/2019', '12/11/2019', 'S1234567J', '6.0', '2.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'City Hall', 'Bedok', '18:00', '18:11', '12/11/2019', '12/11/2019', 'S1234567J', '9.0', '2.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'City Hall', 'Jurong', '12:00', '12:25', '12/11/2019', '12/11/2019', 'S1234567J', '11.0', '4.0');
+INSERT INTO advertised_trips VALUES('hafiz', 'City Hall', 'Jurong', '23:00', '23:20', '12/11/2019', '12/11/2019', 'S1234567J', '27.5', '4.0');
 --SELECT * FROM advertised_trips;
 
-INSERT INTO bids VALUES('30', 'hafiz', 'vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO bids VALUES('10', 'hafiz', 'vernon', 'NUS', 'Bedok', '13:00', '14:22', '20/9/2019', '20/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO bids VALUES('10', 'vernon', 'hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '21/9/2019', '21/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO bids VALUES('10', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '22/9/2019', '22/9/2019', 'S1234567J', '2.9', '1.3');
-INSERT INTO bids VALUES('10', 'gervaise','vernon', 'Expo', 'NUS', '13:22', '14:22', '23/9/2019', '23/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO bids VALUES('10', 'gervaise','vernon', 'NUS', 'Bedok', '13:00', '14:22', '24/9/2019', '24/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '25/9/2019', '25/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '26/9/2019', '26/9/2019', 'S1234567J', '2.9', '1.3');
-INSERT INTO bids VALUES('10', 'zhihong8888','vernon', 'Expo', 'NUS', '13:22', '14:22', '27/9/2019', '27/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO bids VALUES('10', 'zhihong8888','vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
+INSERT INTO bids VALUES('10', 'hafiz', 'vernon', 'NUS', 'Expo', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S9876542E', '32.0', '6.0');
+INSERT INTO bids VALUES('10', 'hafiz', 'vernon', 'NUS', 'Pasir Ris', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S1234567J', '42.0', '8.0');
+INSERT INTO bids VALUES('10', 'vernon', 'hafiz', 'NUS', 'Boon Lay', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S1234567J', '22.0', '4.0');
+INSERT INTO bids VALUES('10', 'vernon', 'hafiz', 'NUS', 'Boon Lay', '23:00', '23:45', '5/11/2019', '5/11/2019', 'S1234567J', '27.5', '4.0');
+INSERT INTO bids VALUES('10', 'gervaise','vernon', 'Expo', 'NUS', '06:45', '07:30', '12/11/2019', '12/11/2019', 'S9876542E', '40.0', '6.0');
+INSERT INTO bids VALUES('10', 'gervaise','vernon', 'Expo', 'NUS', '15:00', '15:35', '12/11/2019', '12/11/2019', 'S9876542E', '16.0', '6.0');
+INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'Pasir Ris', 'NUS', '18:00', '18:45', '12/11/2019', '12/11/2019', 'S1234567J', '31.5', '8.0');
+INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'NUS', 'Bedok', '09:45', '10:25', '12/11/2019', '12/11/2019', 'S1234567J', '22.0', '4.0');
+INSERT INTO bids VALUES('10', 'zhihong8888','vernon', 'NUS', 'Bedok', '23:00', '23:45', '12/11/2019', '12/11/2019', 'S9876542E', '27.50', '4.0');
+INSERT INTO bids VALUES('10', 'zhihong8888','vernon', 'NUS', 'City Hall', '09:45', '10:25', '12/11/2019', '12/11/2019', 'S1234567J', '12.0', '2.0');
+INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'City Hall', 'Bedok', '17:00', '17:30', '12/11/2019', '12/11/2019', 'S1234567J', '6.0', '2.0');
+INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'City Hall', 'Bedok', '18:00', '18:11', '12/11/2019', '12/11/2019', 'S1234567J', '9.0', '2.0');
+INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'City Hall', 'Jurong', '12:00', '12:25', '12/11/2019', '12/11/2019', 'S1234567J', '11.0', '4.0');
+INSERT INTO bids VALUES('10', 'zhihong8888','hafiz', 'City Hall', 'Jurong', '23:00', '23:20', '12/11/2019', '12/11/2019', 'S1234567J', '27.5', '4.0');
 
-INSERT INTO bids VALUES('30', 'gervaise', 'vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO bids VALUES('20', 'gervaise', 'vernon', 'NUS', 'Bedok', '13:00', '14:22', '20/9/2019', '20/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO bids VALUES('20', 'gervaise', 'hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '21/9/2019', '21/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO bids VALUES('20', 'gervaise','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '22/9/2019', '22/9/2019', 'S1234567J', '2.9', '1.3');
-INSERT INTO bids VALUES('20', 'hafiz','vernon', 'Expo', 'NUS', '13:22', '14:22', '23/9/2019', '23/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO bids VALUES('20', 'hafiz','vernon', 'NUS', 'Bedok', '13:00', '14:22', '24/9/2019', '24/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO bids VALUES('20', 'vernon','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '25/9/2019', '25/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO bids VALUES('20', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '26/9/2019', '26/9/2019', 'S1234567J', '2.9', '1.3');
-INSERT INTO bids VALUES('20', 'gervaise','vernon', 'Expo', 'NUS', '13:22', '14:22', '27/9/2019', '27/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO bids VALUES('20', 'gervaise','vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO bids VALUES('20', 'gervaise','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO bids VALUES('20', 'gervaise','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
+INSERT INTO bids VALUES('30', 'hafiz', 'vernon', 'NUS', 'Expo', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S9876542E', '32.0', '6.0');
+INSERT INTO bids VALUES('20', 'hafiz', 'vernon', 'NUS', 'Pasir Ris', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S1234567J', '42.0', '8.0');
+INSERT INTO bids VALUES('20', 'vernon', 'hafiz', 'NUS', 'Boon Lay', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S1234567J', '22.0', '4.0');
+INSERT INTO bids VALUES('20', 'vernon', 'hafiz', 'NUS', 'Boon Lay', '23:00', '23:45', '5/11/2019', '5/11/2019', 'S1234567J', '27.5', '4.0');
+INSERT INTO bids VALUES('20', 'gervaise','vernon', 'Expo', 'NUS', '06:45', '07:30', '12/11/2019', '12/11/2019', 'S9876542E', '40.0', '6.0');
+INSERT INTO bids VALUES('20', 'gervaise','vernon', 'Expo', 'NUS', '15:00', '15:35', '12/11/2019', '12/11/2019', 'S9876542E', '16.0', '6.0');
+INSERT INTO bids VALUES('20', 'zhihong8888','hafiz', 'Pasir Ris', 'NUS', '18:00', '18:45', '12/11/2019', '12/11/2019', 'S1234567J', '31.5', '8.0');
+INSERT INTO bids VALUES('20', 'zhihong8888','hafiz', 'NUS', 'Bedok', '09:45', '10:25', '12/11/2019', '12/11/2019', 'S1234567J', '22.0', '4.0');
+INSERT INTO bids VALUES('20', 'zhihong8888','vernon', 'NUS', 'Bedok', '23:00', '23:45', '12/11/2019', '12/11/2019', 'S9876542E', '27.50', '4.0');
+INSERT INTO bids VALUES('20', 'zhihong8888','vernon', 'NUS', 'City Hall', '09:45', '10:25', '12/11/2019', '12/11/2019', 'S1234567J', '12.0', '2.0');
+INSERT INTO bids VALUES('20', 'zhihong8888','hafiz', 'City Hall', 'Bedok', '17:00', '17:30', '12/11/2019', '12/11/2019', 'S1234567J', '6.0', '2.0');
+INSERT INTO bids VALUES('20', 'zhihong8888','hafiz', 'City Hall', 'Bedok', '18:00', '18:11', '12/11/2019', '12/11/2019', 'S1234567J', '9.0', '2.0');
+INSERT INTO bids VALUES('20', 'zhihong8888','hafiz', 'City Hall', 'Jurong', '12:00', '12:25', '12/11/2019', '12/11/2019', 'S1234567J', '11.0', '4.0');
+INSERT INTO bids VALUES('20', 'zhihong8888','hafiz', 'City Hall', 'Jurong', '23:00', '23:20', '12/11/2019', '12/11/2019', 'S1234567J', '27.5', '4.0');
 
-INSERT INTO bids VALUES('30', 'zhihong8888', 'vernon', 'Expo', 'NUS', '13:22', '14:22', '19/9/2019', '19/9/2019', 'S9876542E', '3.5', '1.2', 'true', 'System', 'true', '5');
-INSERT INTO bids VALUES('30', 'zhihong8888', 'vernon', 'NUS', 'Bedok', '13:00', '14:22', '20/9/2019', '20/9/2019', 'S9876542E', '2.9', '1.3', 'true', 'System', 'true', '3');
-INSERT INTO bids VALUES('30', 'zhihong8888', 'hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '21/9/2019', '21/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '5');
-INSERT INTO bids VALUES('30', 'zhihong8888','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '22/9/2019', '22/9/2019', 'S1234567J', '2.9', '1.3', 'true', 'System', 'true', '4');
-INSERT INTO bids VALUES('30', 'zhihong8888','vernon', 'Expo', 'NUS', '13:22', '14:22', '23/9/2019', '23/9/2019', 'S9876542E', '3.5', '1.2', 'true', 'System', 'true', '5');
-INSERT INTO bids VALUES('30', 'zhihong8888','vernon', 'NUS', 'Bedok', '13:00', '14:22', '24/9/2019', '24/9/2019', 'S9876542E', '2.9', '1.3', 'true', 'System', 'true', '4');
-INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '25/9/2019', '25/9/2019', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
-INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '26/9/2019', '26/9/2019', 'S1234567J', '2.9', '1.3', 'true', 'System', 'true', '4');
-INSERT INTO bids VALUES('30', 'hafiz','vernon', 'Expo', 'NUS', '13:22', '14:22', '27/9/2019', '27/9/2019', 'S9876542E', '3.5', '1.2');
-INSERT INTO bids VALUES('30', 'hafiz','vernon', 'NUS', 'Bedok', '13:00', '14:22', '28/9/2019', '28/9/2019', 'S9876542E', '2.9', '1.3');
-INSERT INTO bids VALUES('30', 'vernon','hafiz', 'Pasir Ris', 'NUS', '13:22', '14:22', '29/9/2019', '29/9/2019', 'S1234567J', '3.5', '1.2');
-INSERT INTO bids VALUES('30', 'vernon','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
+INSERT INTO bids VALUES('30', 'hafiz', 'vernon', 'NUS', 'Expo', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S9876542E', '32.0', '6.0', 'true', 'System', 'true', '5');
+INSERT INTO bids VALUES('30', 'hafiz', 'vernon', 'NUS', 'Pasir Ris', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S1234567J', '42.0', '8.0', 'true', 'System', 'true', '5');
+INSERT INTO bids VALUES('30', 'vernon', 'hafiz', 'NUS', 'Boon Lay', '09:45', '10:25', '5/11/2019', '5/11/2019', 'S1234567J', '22.0', '4.0', 'true', 'System', 'true', '4');
+INSERT INTO bids VALUES('30', 'vernon', 'hafiz', 'NUS', 'Boon Lay', '23:00', '23:45', '5/11/2019', '5/11/2019', 'S1234567J', '27.5', '4.0', 'true', 'System', 'true', '4');
+INSERT INTO bids VALUES('30', 'gervaise','vernon', 'Expo', 'NUS', '06:45', '07:30', '12/11/2019', '12/11/2019', 'S9876542E', '40.0', '6.0', 'true', 'System', 'true', '5');
+INSERT INTO bids VALUES('30', 'gervaise','vernon', 'Expo', 'NUS', '15:00', '15:35', '12/11/2019', '12/11/2019', 'S9876542E', '16.0', '6.0', 'true', 'System', 'true', '3');
+INSERT INTO bids VALUES('30', 'gervaise','hafiz', 'Pasir Ris', 'NUS', '18:00', '18:45', '12/11/2019', '12/11/2019', 'S1234567J', '31.5', '8.0', 'true', 'System', 'true', '3');
+INSERT INTO bids VALUES('30', 'zhihong8888','hafiz', 'NUS', 'Bedok', '09:45', '10:25', '12/11/2019', '12/11/2019', 'S1234567J', '22.0', '4.0', 'true', 'System', 'true', '4');
+INSERT INTO bids VALUES('30', 'zhihong8888','hafiz', 'NUS', 'Bedok', '23:00', '23:45', '12/11/2019', '12/11/2019', 'S9876542E', '27.50', '4.0', 'true', 'System', 'true', '5');
+INSERT INTO bids VALUES('30', 'zhihong8888','vernon', 'NUS', 'City Hall', '09:45', '10:25', '12/11/2019', '12/11/2019', 'S1234567J', '12.0', '2.0', 'true', 'System', 'true', '5');
+INSERT INTO bids VALUES('30', 'zhihong8888','vernon', 'City Hall', 'Bedok', '17:00', '17:30', '12/11/2019', '12/11/2019', 'S1234567J', '6.0', '2.0', 'true', 'System', 'true', '4');
+INSERT INTO bids VALUES('30', 'zhihong8888','hafiz', 'City Hall', 'Bedok', '18:00', '18:11', '12/11/2019', '12/11/2019', 'S1234567J', '9.0', '2.0', 'true', 'System', 'true', '4');
+INSERT INTO bids VALUES('30', 'zhihong8888','hafiz', 'City Hall', 'Jurong', '12:00', '12:25', '12/11/2019', '12/11/2019', 'S1234567J', '11.0', '4.0', 'true', 'System', 'true', '4');
+INSERT INTO bids VALUES('30', 'zhihong8888','hafiz', 'City Hall', 'Jurong', '23:00', '23:20', '12/11/2019', '12/11/2019', 'S1234567J', '27.5', '4.0', 'true', 'System', 'true', '4');
 
 
 INSERT INTO bids (bid_price, passenger_username, driver_username, s_location, e_location, s_time, e_time, s_date, e_date, license_plate, min_bid, total_dist, is_win, mode_of_acceptance, is_completed, rating) VALUES('10', 'gervaise', 'hafiz', 'Pasir Ris', 'Boon Lay', '13:22', '14:22', '17/9/2020', '17/9/2020', 'S1234567J', '3.5', '1.2', 'true', 'System', 'true', '3');
