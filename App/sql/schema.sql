@@ -116,15 +116,13 @@ CREATE TABLE  category (
 	Constraint check_seats CHECK (seats_offered > 0)
 	
 );
-INSERT INTO category VALUES('Honda', 'Minibus', '6'); 
-INSERT INTO category VALUES('Honda', 'Car', '4');
-INSERT INTO category VALUES('Nissan', 'Minibus', '6');
-INSERT INTO category VALUES('Nissan', 'Car', '4');
-INSERT INTO category VALUES('Toyota', 'Car', '4');
-INSERT INTO category VALUES('Toyota', 'Minibus', '6');
-INSERT INTO category VALUES('BMW', 'Car', '4');
-INSERT INTO category VALUES('Volvo', 'Car', '4');
-INSERT INTO category VALUES('Mercedes', 'Car', '4');
+INSERT INTO category VALUES('Honda Alphard', 'Minibus', '6'); 
+INSERT INTO category VALUES('Honda Vezel', 'Car', '4');
+INSERT INTO category VALUES('Subaru Forester', 'Minibus', '6');
+INSERT INTO category VALUES('Subaru Legacy', 'Car', '4');
+INSERT INTO category VALUES('Toyota Camry', 'Car', '4');
+INSERT INTO category VALUES('Toyota SUV', 'Minibus', '6');
+INSERT INTO category VALUES('BMW Alphina', 'Car', '4');
 
 SELECT * FROM CATEGORY;
 
