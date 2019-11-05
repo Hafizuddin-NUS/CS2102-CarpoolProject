@@ -8,7 +8,12 @@ const pool = new Pool({
 });
 
 router.get('/', function(req, res, next) {
-    res.render('auth_login', { title: 'Login' });
+    res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+	if (req.signedCookies.user_id != null) {
+		res.redirect('../dashboard');
+    } else {
+        res.render('auth_login', { title: 'Login' });
+    }
   });
 
 
@@ -17,6 +22,7 @@ var sql_query = 'SELECT * FROM users WHERE';
 var add_user_query = 'INSERT INTO users VALUES';
 
 router.post('/', (req, res, next) => {
+
     var check_username_query = sql_query +" username = '" + req.body.username + "';";
     pool.query(check_username_query, (err, data) => {
         if(err){
