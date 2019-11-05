@@ -69,10 +69,24 @@ router.post('/adding_vehicle', (req, res, next) => {
     var model = req.body.model;
 	pool.query(sql_query.query.add_vehicle,[license_plate, model] ,(err, data) => {
 		if(err) {
-			console.error(err);
+			pool.query(sql_query.query.add_to_drives,[req.signedCookies.user_id, license_plate] ,(err2, data2) => {
+				if(err2) {
+					console.error(err2);
+				} 
+				else{
+					res.redirect('../dashboard');
+				}
+			});
 		} 
         else{
-            res.redirect('../dashboard');
+			pool.query(sql_query.query.add_to_drives,[req.signedCookies.user_id, license_plate] ,(err2, data2) => {
+				if(err2) {
+					console.error(err2);
+				} 
+				else{
+					res.redirect('../dashboard');
+				}
+			});
         }
 	});
 });

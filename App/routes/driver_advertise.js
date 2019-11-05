@@ -105,38 +105,104 @@ router.post('/accept_bid', (req, res, next) => {
 /* GET */
 router.get('/', function(req, res, next) {
 	var driver_username = req.signedCookies.user_id;
-	pool.query(sql_query.query.driver_advertised_trips, [driver_username], (err, data) => {
-		if(err){
-            res.json({
-                message : 'ERROR'
-            }); 
-		}
-		else if (data.rows.length >= 0) {
-			pool.query(sql_query.query.get_location, (err2, data2) => {
-				if(err2){
-					console.error(err2);
-				}
-				else if (data2.rows.length >= 0){
-					pool.query(sql_query.query.display_driver_bids, [driver_username], (err3, data3) => {
-						if(err3){
-							console.error(err3);
-						} else{	
-							pool.query(sql_query.query.get_license_plate_of_driver, [driver_username], (err4, data4) => {
-								if(err4){
-									console.error(err4);
-								} else{	
-									res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, data3: data3.rows, data4: data4.rows, isLoggedin: req.signedCookies.user_id });
-								}
-							});
-						}
-					});
-				}
-			});
-		}
-		else {
-			next(new Error('Error more than 2 entries found.'));
-		}
-	});
+	var location = req.query.location;
+	if (location == null) {
+		pool.query(sql_query.query.driver_advertised_trips, [driver_username], (err, data) => {
+			if(err){
+				res.json({
+					message : 'ERROR'
+				}); 
+			}
+			else if (data.rows.length >= 0) {
+				pool.query(sql_query.query.get_location, (err2, data2) => {
+					if(err2){
+						console.error(err2);
+					}
+					else if (data2.rows.length >= 0){
+						pool.query(sql_query.query.display_driver_bids, [driver_username], (err3, data3) => {
+							if(err3){
+								console.error(err3);
+							} else{	
+								pool.query(sql_query.query.get_license_plate_of_driver, [driver_username], (err4, data4) => {
+									if(err4){
+										console.error(err4);
+									} else{	
+										pool.query(sql_query.query.confirmed_bids, [driver_username], (err5, data5) => {
+											if(err5){
+												console.error(err5);
+											} else{	
+												pool.query(sql_query.query.driver_completed_trips, [driver_username], (err6, data6) => {
+													if(err5){
+														console.error(err6);
+													} else{	
+														res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, data3: data3.rows, data4: data4.rows, data5: data5.rows, data6: data6.rows, isLoggedin: req.signedCookies.user_id });
+													}
+												});
+											}
+										});
+									}
+								});
+							}
+						});
+					}
+				});
+			}
+			else {
+				next(new Error('Error more than 2 entries found.'));
+			}
+		});
+	} 
+	else {
+		var search_parsed = location.split(":");
+		var s_location = search_parsed[0];
+		var e_location = search_parsed[1];
+		var s_date = search_parsed[2];
+		console.log(s_location);
+		pool.query(sql_query.query.driver_advertised_trips, [driver_username], (err, data) => {
+			if(err){
+				res.json({
+					message : 'ERROR'
+				}); 
+			}
+			else if (data.rows.length >= 0) {
+				pool.query(sql_query.query.get_location, (err2, data2) => {
+					if(err2){
+						console.error(err2);
+					}
+					else if (data2.rows.length >= 0){
+						pool.query(sql_query.query.display_driver_bids2, [driver_username,s_location, e_location, s_date], (err3, data3) => {
+							if(err3){
+								console.error(err3);
+							} else{	
+								pool.query(sql_query.query.get_license_plate_of_driver, [driver_username], (err4, data4) => {
+									if(err4){
+										console.error(err4);
+									} else{	
+										pool.query(sql_query.query.confirmed_bids, [driver_username], (err5, data5) => {
+											if(err5){
+												console.error(err5);
+											} else{	
+												pool.query(sql_query.query.driver_completed_trips, [driver_username], (err6, data6) => {
+													if(err5){
+														console.error(err6);
+													} else{	
+														res.render('driver_advertise', { title: req.signedCookies.user_id , data: data.rows, data2: data2.rows, data3: data3.rows, data4: data4.rows, data5: data5.rows, data6: data6.rows, isLoggedin: req.signedCookies.user_id });
+													}
+												});
+											}
+										});								
+									}
+								});
+							}
+						});
+					}
+				});
+			}
+			else {
+				next(new Error('Error more than 2 entries found.'));
+			}
+		});
+	}
 });
 
 module.exports = router;
