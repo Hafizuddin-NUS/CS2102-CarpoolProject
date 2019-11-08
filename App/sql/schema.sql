@@ -138,8 +138,8 @@ CREATE TABLE  vehicles (
 	--model: whitespaces, alphabets or numbers only.  
 	Constraint check_model CHECK (model ~ '^[a-zA-Z0-9\s]*$')
 );
-INSERT INTO vehicles VALUES ('S1234567J', 'Honda'); 
-INSERT INTO vehicles VALUES ('S9876542E', 'Mercedes'); 
+INSERT INTO vehicles VALUES ('S1234567J', 'Honda Alphard'); 
+INSERT INTO vehicles VALUES ('S9876542E', 'BMW Alphina'); 
 SELECT * FROM VEHICLES;
 
 
