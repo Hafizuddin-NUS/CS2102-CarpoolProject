@@ -244,6 +244,8 @@ CREATE TABLE advertised_trips (
 	Constraint check_min_bid CHECK (min_bid > 0),
 	Constraint check_total_dist CHECK (total_dist > 0),
 	
+	Constraint check_driver_rating CHECK (driver_rating > 0 and driver_rating <=5),
+	
 	FOREIGN KEY (driver_username, license_plate) 
 		REFERENCES drives (driver_username, license_plate)  ON UPDATE CASCADE ON DELETE CASCADE,
 		
@@ -725,3 +727,5 @@ INSERT INTO passengers VALUES ('user1');
 INSERT INTO bids VALUES('30', 'user1','hafiz', 'NUS', 'Boon Lay', '13:00', '14:22', '30/9/2019', '30/9/2019', 'S1234567J', '2.9', '1.3');
 
 */
+
+
